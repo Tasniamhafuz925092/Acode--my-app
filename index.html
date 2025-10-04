@@ -38,6 +38,9 @@
       width: 220px;
       margin: 10px auto;
     }
+    a {
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -57,7 +60,10 @@
 
   <!-- Credits Options -->
   <div id="creditsOptions" class="options">
-    <button id="depositBtn">➕ Deposit</button>
+    <!-- Deposit বাটন এখন deposit.html পেজে নিয়ে যাবে -->
+    <a href="deposit.html">
+      <button id="depositBtn">➕ Deposit</button>
+    </a>
     <button id="withdrawBtn">➖ Withdraw</button>
     <button id="backBtn">⬅ Back</button>
   </div>
@@ -68,7 +74,6 @@
     const creditsBtn = document.getElementById("creditsBtn");
     const creditsOptions = document.getElementById("creditsOptions");
     const backBtn = document.getElementById("backBtn");
-    const depositBtn = document.getElementById("depositBtn");
     const withdrawBtn = document.getElementById("withdrawBtn");
 
     // Start চাপলে Home Options দেখাবে
@@ -87,11 +92,6 @@
     backBtn.addEventListener("click", function() {
       creditsOptions.style.display = "none";
       homeOptions.style.display = "block";
-    });
-
-    // Deposit বাটনের কাজ
-    depositBtn.addEventListener("click", function() {
-      alert("Deposit option clicked 💵");
     });
 
     // Withdraw বাটনের কাজ
