@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposit - BULLPEN</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f8e9;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #1b5e20;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      margin: 10px;
+      padding: 10px;
+      width: 250px;
+      font-size: 16px;
+    }
+    button {
+      background: #388e3c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <h1>Deposit</h1>
+  <form>
+    <label>Payment Method</label><br>
+    <select>
+      <option>Bkash</option>
+      <option>Nagad</option>
+    </select><br>
+    <label>Mobile Number</label><br>
+    <input type="text" placeholder="01XXXXXXXXX"><br>
+    <label>Amount</label><br>
+    <input type="number" placeholder="Enter amount"><br>
+    <button type="submit">Confirm Deposit</button>
+  </form>
+</body>
+</html>
