@@ -1,24 +1,103 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BULLPEN</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #e3f2fd;
+      margin: 0;
+      padding: 50px;
+    }
+    h1 {
+      color: #0d47a1;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #1976d2;
+      color: white;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+    .options {
+      display: none; /* শুরুতে লুকানো */
+      margin-top: 20px;
+    }
+    .options button {
+      display: block;
+      width: 220px;
+      margin: 10px auto;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Bullpen</h1>
-  </header>
+  <h1>BULLPEN</h1>
 
-  <main>
-    <div class="greet-box">
-      <input type="text" id="nameInput" placeholder="Enter your name" />
-      <button id="greetBtn">Say Hello</button>
-      <p id="greeting"></p>
-    </div>
-  </main>
+  <!-- Start Button -->
+  <button id="startBtn">Start</button>
 
-  <script src="script.js"></script>
+  <!-- Home Options -->
+  <div id="homeOptions" class="options">
+    <button>📂 Profile</button>
+    <button>📝 Tasks</button>
+    <button id="creditsBtn">💰 Credits</button>
+    <button>⚙ Settings</button>
+    <button>❌ Logout</button>
+  </div>
+
+  <!-- Credits Options -->
+  <div id="creditsOptions" class="options">
+    <button id="depositBtn">➕ Deposit</button>
+    <button id="withdrawBtn">➖ Withdraw</button>
+    <button id="backBtn">⬅ Back</button>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const homeOptions = document.getElementById("homeOptions");
+    const creditsBtn = document.getElementById("creditsBtn");
+    const creditsOptions = document.getElementById("creditsOptions");
+    const backBtn = document.getElementById("backBtn");
+    const depositBtn = document.getElementById("depositBtn");
+    const withdrawBtn = document.getElementById("withdrawBtn");
+
+    // Start চাপলে Home Options দেখাবে
+    startBtn.addEventListener("click", function() {
+      homeOptions.style.display = "block";
+      startBtn.style.display = "none";
+    });
+
+    // Credits চাপলে Credits Options দেখাবে
+    creditsBtn.addEventListener("click", function() {
+      homeOptions.style.display = "none";
+      creditsOptions.style.display = "block";
+    });
+
+    // Back চাপলে আবার Home Options-এ যাবে
+    backBtn.addEventListener("click", function() {
+      creditsOptions.style.display = "none";
+      homeOptions.style.display = "block";
+    });
+
+    // Deposit বাটনের কাজ
+    depositBtn.addEventListener("click", function() {
+      alert("Deposit option clicked 💵");
+    });
+
+    // Withdraw বাটনের কাজ
+    withdrawBtn.addEventListener("click", function() {
+      alert("Withdraw option clicked 💳");
+    });
+  </script>
 </body>
 </html>
