@@ -9,8 +9,8 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f0fdf4;
-      color: #222;
-      padding-bottom: 60px;
+      color: #333;
+      padding-bottom: 70px;
     }
     header {
       background: #16a34a;
@@ -29,7 +29,7 @@
     .action-btn {
       background: #16a34a;
       color: white;
-      padding: 10px;
+      padding: 10px 15px;
       border: none;
       border-radius: 6px;
       margin: 5px 0;
@@ -39,13 +39,12 @@
     .action-btn:hover {
       background: #0f7a33;
     }
-    input {
-      width: 100%;
+    input, select {
+      width: 90%;
       padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
+      margin: 5px 0;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 5px;
     }
     .navbar {
       position: fixed;
@@ -69,210 +68,137 @@
 </head>
 <body>
   <header>
-    <h1>🐂 Bullpen App</h1>
+    🐂 Bullpen App
   </header>
 
   <main>
     <!-- Home -->
     <div class="page active" id="home">
       <h2>🏠 হোম</h2>
-      <button class="action-btn" data-page="withdraw">Withdraw</button>
-      <button class="action-btn" data-page="deposit">Deposit</button>
+      <button class="action-btn" data-page="withdraw">💸 Withdraw</button>
+      <button class="action-btn" data-page="deposit">💰 Deposit</button>
     </div>
 
     <!-- Withdraw -->
     <div class="page" id="withdraw">
       <h2>💸 Withdraw</h2>
-      <p>আপনার বিকাশ নাম্বার: <b id="userBkash">017XXXXXXXX</b></p>
-      <label>টাকার পরিমাণ:</label><br>
-      <input type="number" id="withdrawAmount" placeholder="Amount"><br><br>
-      <button class="action-btn" id="withdrawBtn">Send Money</button>
+      <label>📱 আপনার নাম্বার:</label><br>
+      <input type="text" id="withdrawNumber" placeholder="01XXXXXXXXX"><br>
+
+      <label>📲 পেমেন্ট মেথড:</label><br>
+      <select id="withdrawMethod">
+        <option value="">-- Select Method --</option>
+        <option value="Bkash">Bkash</option>
+        <option value="Nagad">Nagad</option>
+      </select><br>
+
+      <label>💰 টাকার পরিমাণ:</label><br>
+      <input type="number" id="withdrawAmount" placeholder="Amount"><br>
+
+      <button class="action-btn" id="withdrawBtn">Withdraw Now</button>
     </div>
 
-    
-  <!-- Deposit -->
-<div class="page" id="deposit">
-  <h2>💰 Deposit</h2>
-  
-  <label>পেমেন্ট মেথড বেছে নিন:</label><br>
-  <select id="paymentMethod">
-    <option value="">-- Select Method --</option>
-    <option value="bkash">Bkash</option>
-    <option value="nagad">Nagad</option>
-  </select><br><br>
-  
-  <label>টাকার পরিমাণ বেছে নিন:</label><br>
-  <select id="depositAmount">
-    <option value="">-- Select Amount --</option>
-    <option value="200">৳200</option>
-    <option value="300">৳300</option>
-    <option value="500">৳500</option>
-    <option value="1000">৳1000</option>
-  </select><br><br>
-  
-  <button class="action-btn" id="depositBtn">Deposit Now</button>
-</div>
+    <!-- Deposit -->
+    <div class="page" id="deposit">
+      <h2>💰 Deposit</h2>
+      <p>👉 বিকাশ নাম্বার: <b>01956715958</b></p>
+      <p>👉 নগদ নাম্বার: <b>01956715958</b></p>
 
-<script>
-  const depositBtn = document.getElementById("depositBtn");
-  depositBtn.addEventListener("click", () => {
-    const method = document.getElementById("paymentMethod").value;
-    const amount = document.getElementById("depositAmount").value;
+      <label>টাকার পরিমাণ বেছে নিন:</label><br>
+      <select id="depositAmount">
+        <option value="">-- Select Amount --</option>
+        <option value="200">৳200</option>
+        <option value="300">৳300</option>
+        <option value="500">৳500</option>
+        <option value="1000">৳1000</option>
+      </select><br><br>
 
-    if (!method) {
-      alert("⚠ দয়া করে Bkash বা Nagad সিলেক্ট করুন!");
-      return;
-    }
-    if (!amount) {
-      alert("⚠ দয়া করে টাকার পরিমাণ সিলেক্ট করুন!");
-      return;
-    }
-
-    // নাম্বার সেট
-    let number = method === "bkash" ? "01956715958" : "01956715958";
-
-    // Telegram লিংক (তোমার official username)
-    let telegramUser = "Bullpenpofficial"; 
-    let message = `আমি ${amount} টাকা Deposit করতে চাই ${method.toUpperCase()} (${number}) এ।`;
-
-    let url = `https://t.me/${telegramUser}?text=${encodeURIComponent(message)}`;
-
-    // Redirect to Telegram
-    window.open(url, "_blank");
-  });
-</script>
-  <button class="action-btn" id="depositBtn">Deposit Now</button>
-</div>
+      <button class="action-btn" id="depositBtn">Deposit Now</button>
+    </div>
 
     <!-- Profile -->
     <div class="page" id="profile">
       <h2>👤 প্রোফাইল</h2>
-      <p>ব্যালেন্স: <span id="balance">৳500</span></p>
-      <p>দৈনিক আয়: <span>৳40</span></p>
+      <p>💳 Balance: <b id="balance">0 ৳</b></p>
+      <p>📈 Daily Income: <b id="dailyIncome">0 ৳</b></p>
     </div>
 
     <!-- Refer -->
     <div class="page" id="refer">
       <h2>🔗 Refer & Earn</h2>
-      <p>তোমার রেফারেল লিংক:</p>
-      <input type="text" id="refLink" value="https://bullpenapp.com/ref123" readonly>
-      <button class="action-btn" id="copyLink">Copy</button>
-      <button class="action-btn" id="shareLink">Share</button>
+      <p>👉 আপনার রেফার লিঙ্ক:</p>
+      <input type="text" id="refLink" value="https://example.com/ref123" readonly>
+      <button class="action-btn" onclick="copyRef()">Copy Link</button>
     </div>
   </main>
 
-  <nav class="navbar">
-    <a href="#" class="active" data-page="home">🏠 Home</a>
+  <!-- Bottom Navbar -->
+  <div class="navbar">
+    <a href="#" data-page="home" class="active">🏠 Home</a>
     <a href="#" data-page="profile">👤 Profile</a>
     <a href="#" data-page="refer">🔗 Refer</a>
-  </nav>
+  </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const navLinks = document.querySelectorAll(".navbar a");
-      const pages = document.querySelectorAll(".page");
-      const actionBtns = document.querySelectorAll(".action-btn");
+    // Navigation
+    const links = document.querySelectorAll(".navbar a, .action-btn[data-page]");
+    const pages = document.querySelectorAll(".page");
 
-      function showPage(id) {
-        pages.forEach(p => p.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-      }
-      function setActiveNav(activeLink) {
-        navLinks.forEach(l => l.classList.remove("active"));
-        activeLink.classList.add("active");
-      }
+    links.forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const pageId = link.getAttribute("data-page");
+        if (pageId) {
+          pages.forEach(p => p.classList.remove("active"));
+          document.getElementById(pageId).classList.add("active");
 
-      // Navbar
-      navLinks.forEach(link => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          showPage(link.getAttribute("data-page"));
-          setActiveNav(link);
-        });
+          document.querySelectorAll(".navbar a").forEach(a => a.classList.remove("active"));
+          document.querySelector(`.navbar a[data-page='${pageId}']`)?.classList.add("active");
+        }
       });
-
-      // Home buttons
-      actionBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const target = btn.getAttribute("data-page");
-          if (target) showPage(target);
-        });
-      });
-
-    <!-- Withdraw -->
-<div class="page" id="withdraw">
-  <!-- এখানে আগের কোড ছিল, সেটা মুছে দিয়ে নতুন কোড বসাও -->
-  
-  <div style="padding:20px;">
-    <h2>💸 Withdraw</h2>
-
-    <label>📱 আপনার নাম্বার:</label><br>
-    <input type="text" id="withdrawNumber" placeholder="01XXXXXXXXX" style="padding:8px;width:90%;margin:5px 0;"><br>
-
-    <label>📲 পেমেন্ট মেথড:</label><br>
-    <select id="withdrawMethod" style="padding:8px;width:90%;margin:5px 0;">
-      <option value="">-- Select Method --</option>
-      <option value="Bkash">Bkash</option>
-      <option value="Nagad">Nagad</option>
-    </select><br>
-
-    <label>💰 টাকার পরিমাণ:</label><br>
-    <input type="number" id="withdrawAmount" placeholder="Amount" style="padding:8px;width:90%;margin:5px 0;"><br>
-
-    <button id="withdrawBtn" style="padding:10px 20px;background:#1b5e20;color:white;border:none;border-radius:5px;">
-      Withdraw Now
-    </button>
-  </div>
-</div>
-
-<script>
-  document.getElementById("withdrawBtn").addEventListener("click", () => {
-    const number = document.getElementById("withdrawNumber").value;
-    const method = document.getElementById("withdrawMethod").value;
-    const amount = document.getElementById("withdrawAmount").value;
-
-    if (!number || !method || !amount) {
-      alert("⚠ সব ফিল্ড পূরণ করুন!");
-      return;
-    }
-
-    // Telegram Username
-    let telegramUser = "Bullpenpofficial";
-    let message = `📤 Withdraw Request\n\nMethod: ${method}\nNumber: ${number}\nAmount: ${amount}৳`;
-
-    let url = `https://t.me/${telegramUser}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-  });
-</script>
-
-      // Copy Referral
-      const copyBtn = document.getElementById("copyLink");
-      if (copyBtn) {
-        copyBtn.addEventListener("click", () => {
-          const refInput = document.getElementById("refLink");
-          refInput.select();
-          document.execCommand("copy");
-          alert("Referral link copied!");
-        });
-      }
-
-      // Share Referral
-      const shareBtn = document.getElementById("shareLink");
-      if (shareBtn) {
-        shareBtn.addEventListener("click", () => {
-          const link = document.getElementById("refLink").value;
-          if (navigator.share) {
-            navigator.share({
-              title: "Join Bullpen App",
-              text: "Check this app and earn money!",
-              url: link
-            });
-          } else {
-            alert("শেয়ার করার সুবিধা এই ব্রাউজারে নেই।");
-          }
-        });
-      }
     });
+
+    // Withdraw Button -> Telegram
+    document.getElementById("withdrawBtn").addEventListener("click", () => {
+      const number = document.getElementById("withdrawNumber").value;
+      const method = document.getElementById("withdrawMethod").value;
+      const amount = document.getElementById("withdrawAmount").value;
+
+      if (!number || !method || !amount) {
+        alert("সব তথ্য পূরণ করুন!");
+        return;
+      }
+
+      const msg = `Withdraw Request:\nNumber: ${number}\nMethod: ${method}\nAmount: ${amount}`;
+      window.open(`https://t.me/Bullpenpofficial?text=${encodeURIComponent(msg)}`, "_blank");
+    });
+
+    // Deposit Button -> Telegram + Daily Income Update
+    document.getElementById("depositBtn").addEventListener("click", () => {
+      const amount = document.getElementById("depositAmount").value;
+      if (!amount) {
+        alert("টাকার পরিমাণ সিলেক্ট করুন!");
+        return;
+      }
+
+      // Balance Update
+      document.getElementById("balance").innerText = amount + " ৳";
+      
+      // Daily Income = 10% of Deposit
+      let income = amount * 0.10;
+      document.getElementById("dailyIncome").innerText = income + " ৳";
+
+      const msg = `Deposit Request:\nAmount: ${amount}\nDaily Income: ${income}`;
+      window.open(`https://t.me/Bullpenpofficial?text=${encodeURIComponent(msg)}`, "_blank");
+    });
+
+    // Copy Refer Link
+    function copyRef() {
+      const refLink = document.getElementById("refLink");
+      refLink.select();
+      document.execCommand("copy");
+      alert("লিঙ্ক কপি হয়েছে!");
+    }
   </script>
 </body>
 </html>
