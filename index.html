@@ -29,7 +29,7 @@
     .action-btn {
       background: #16a34a;
       color: white;
-      padding: 10px 20px;
+      padding: 10px;
       border: none;
       border-radius: 6px;
       margin: 5px 0;
@@ -89,11 +89,17 @@
       <button class="action-btn" id="withdrawBtn">Send Money</button>
     </div>
 
-    <!-- Deposit -->
+    
+  <!-- Deposit -->
 <div class="page" id="deposit">
   <h2>💰 Deposit</h2>
-  <p>👉 বিকাশ নাম্বার: <b>01956715958</b></p>
-  <p>👉 নগদ নাম্বার: <b>01956715958</b></p>
+  
+  <label>পেমেন্ট মেথড বেছে নিন:</label><br>
+  <select id="paymentMethod">
+    <option value="">-- Select Method --</option>
+    <option value="bkash">Bkash</option>
+    <option value="nagad">Nagad</option>
+  </select><br><br>
   
   <label>টাকার পরিমাণ বেছে নিন:</label><br>
   <select id="depositAmount">
@@ -104,6 +110,37 @@
     <option value="1000">৳1000</option>
   </select><br><br>
   
+  <button class="action-btn" id="depositBtn">Deposit Now</button>
+</div>
+
+<script>
+  const depositBtn = document.getElementById("depositBtn");
+  depositBtn.addEventListener("click", () => {
+    const method = document.getElementById("paymentMethod").value;
+    const amount = document.getElementById("depositAmount").value;
+
+    if (!method) {
+      alert("⚠ দয়া করে Bkash বা Nagad সিলেক্ট করুন!");
+      return;
+    }
+    if (!amount) {
+      alert("⚠ দয়া করে টাকার পরিমাণ সিলেক্ট করুন!");
+      return;
+    }
+
+    // নাম্বার সেট
+    let number = method === "bkash" ? "01956715958" : "01956715958";
+
+    // Telegram লিংক (তোমার official username)
+    let telegramUser = "Bullpenpofficial"; 
+    let message = `আমি ${amount} টাকা Deposit করতে চাই ${method.toUpperCase()} (${number}) এ।`;
+
+    let url = `https://t.me/${telegramUser}?text=${encodeURIComponent(message)}`;
+
+    // Redirect to Telegram
+    window.open(url, "_blank");
+  });
+</script>
   <button class="action-btn" id="depositBtn">Deposit Now</button>
 </div>
 
