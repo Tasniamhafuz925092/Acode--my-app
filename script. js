@@ -1,2 +1,255 @@
-// Future interactivity
-console.log("Website Loaded!");
+একদম ঠিক! 💪
+আমি তোমাকে এখন পুরো নতুন, পরিপূর্ণ কোডটা দেব — যেটা তোমার পুরোনো “Capline” প্রজেক্টের জায়গায় বসবে, কিন্তু এখন নাম হবে “Bullpen”,
+এবং সব বাটন/অপশনগুলো এখন কাজ করবে (alert, পেজ পরিবর্তনের মতো ডেমো সহ)।
+
+এই অ্যাপটা হবে সম্পূর্ণ HTML + CSS + JS ভিত্তিক (যেটা GitHub Pages-এ বা যেকোনো হোস্টে চালাতে পারবে)।
+
+
+---
+
+🧱 ফাইল ১: index.html
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bullpen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Banner -->
+  <header>
+    <img src="banner.jpg" alt="Banner" class="banner">
+  </header>
+
+  <!-- Menu Shortcuts -->
+  <section class="shortcuts">
+    <div class="item" id="download">⬇️ ডাউনলোড</div>
+    <div class="item" id="profile">🏢 কোম্পানি প্রোফাইল</div>
+    <div class="item" id="record">📄 অ্যাকাউন্ট রেকর্ড</div>
+    <div class="item" id="savings">💰 আমার সংগ্রহ</div>
+    <div class="item" id="bank">🏦 ব্যাংক এবং পাসওয়ার্ড</div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="active" id="tab1">প্রথম</button>
+    <button id="tab2">দ্বিতীয়</button>
+    <button id="tab3">তৃতীয়</button>
+  </div>
+
+  <!-- Product Card -->
+  <section class="card">
+    <h2>Bullpen 🏆</h2>
+    <p class="sub">দৈনিক উপার্জন</p>
+    <img src="product.jpg" alt="Product" class="product-img">
+    <p>মূল্য: BDT 120</p>
+    <p>কোড: BDT15840</p>
+    <button class="buy">Buy Now</button>
+  </section>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="active" id="home">🏠 হোম</a>
+    <a href="#" id="invite">➕ আমন্ত্রণ</a>
+    <a href="#" id="team">👥 টিম</a>
+    <a href="#" id="account">👤 আমার</a>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+---
+
+🎨 ফাইল ২: style.css
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #fff;
+  color: #333;
+  padding-bottom: 70px;
+}
+
+/* Banner */
+.banner {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Shortcuts */
+.shortcuts {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: #fff;
+}
+
+.shortcuts .item {
+  text-align: center;
+  font-size: 14px;
+  color: green;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  background: #f2f2f2;
+  margin: 10px 0;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #ddd;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tabs .active {
+  background: green;
+  color: white;
+}
+
+/* Product Card */
+.card {
+  background: #fff;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.card h2 {
+  margin-bottom: 5px;
+}
+
+.card .sub {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.product-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.buy {
+  background: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.buy:hover {
+  background: darkgreen;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: green;
+  font-size: 14px;
+  text-align: center;
+}
+
+.bottom-nav .active {
+  font-weight: bold;
+}
+
+
+---
+
+⚙️ ফাইল ৩: script.js
+
+console.log("Bullpen app loaded!");
+
+// Tab switcher demo
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    alert(`"${btn.textContent}" ট্যাবটি নির্বাচিত হয়েছে`);
+  });
+});
+
+// Shortcut clicks
+document.querySelectorAll(".shortcuts .item").forEach(item => {
+  item.addEventListener("click", () => {
+    alert(`${item.textContent} বোতামটি ক্লিক হয়েছে!`);
+  });
+});
+
+// Bottom nav clicks
+document.querySelectorAll(".bottom-nav a").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    document.querySelectorAll(".bottom-nav a").forEach(a => a.classList.remove("active"));
+    link.classList.add("active");
+    alert(`"${link.textContent}" পেজ খোলা হলো`);
+  });
+});
+
+// Buy button
+document.querySelector(".buy").addEventListener("click", () => {
+  alert("ধন্যবাদ! আপনার ক্রয় সম্পন্ন হয়েছে ✅");
+});
+
+
+---
+
+🚀 কীভাবে ব্যবহার করবে
+
+1. তোমার GitHub রিপোতে পুরোনো index.html, style.css, script.js ফাইল মুছে দাও।
+
+
+2. উপরের তিনটা ফাইলের কনটেন্ট কপি-পেস্ট করে দাও।
+
+
+3. GitHub Pages (Settings → Pages → Deploy from branch) দিয়ে পাবলিশ করো।
+
+
+4. খুলে দেখো — এখন প্রতিটি বাটনে ক্লিক করলে কাজ করছে, alert আসছে, আর অ্যাপের নাম Bullpen দেখাবে।
+
+
+
+
+---
+
+চাও আমি তোমাকে “Bullpen” অ্যাপের জন্য একটা লোগো ও ব্যানার ডিজাইন করে দিই (সবুজ ও সাদা থিমে, যেমন স্ক্রিনশটে ছিল)?
+তাহলে সেটাও বানিয়ে দিতে পারি, যাতে পুরো অ্যাপটা একদম প্রফেশনাল লাগে। 🌿
+
+
