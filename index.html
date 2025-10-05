@@ -4,7 +4,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bullpen App</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0fdf4;
+      color: #222;
+      padding-bottom: 60px;
+    }
+    header {
+      background: #16a34a;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .page.active {
+      display: block;
+    }
+    .action-btn {
+      background: #16a34a;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      margin: 5px 0;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .action-btn:hover {
+      background: #0f7a33;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #16a34a;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .navbar a.active {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -59,6 +120,80 @@
     <a href="#" data-page="refer">🔗 Refer</a>
   </nav>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const navLinks = document.querySelectorAll(".navbar a");
+      const pages = document.querySelectorAll(".page");
+      const actionBtns = document.querySelectorAll(".action-btn");
+
+      function showPage(id) {
+        pages.forEach(p => p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+      function setActiveNav(activeLink) {
+        navLinks.forEach(l => l.classList.remove("active"));
+        activeLink.classList.add("active");
+      }
+
+      // Navbar
+      navLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          showPage(link.getAttribute("data-page"));
+          setActiveNav(link);
+        });
+      });
+
+      // Home buttons
+      actionBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-page");
+          if (target) showPage(target);
+        });
+      });
+
+      // Withdraw
+      const withdrawBtn = document.getElementById("withdrawBtn");
+      if (withdrawBtn) {
+        withdrawBtn.addEventListener("click", () => {
+          const amount = document.getElementById("withdrawAmount").value;
+          const number = document.getElementById("userBkash").innerText;
+          if (amount) {
+            alert(`৳${amount} টাকা ${number} নাম্বারে পাঠানো হলো ✅`);
+          } else {
+            alert("দয়া করে টাকার পরিমাণ লিখুন!");
+          }
+        });
+      }
+
+      // Copy Referral
+      const copyBtn = document.getElementById("copyLink");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          const refInput = document.getElementById("refLink");
+          refInput.select();
+          document.execCommand("copy");
+          alert("Referral link copied!");
+        });
+      }
+
+      // Share Referral
+      const shareBtn = document.getElementById("shareLink");
+      if (shareBtn) {
+        shareBtn.addEventListener("click", () => {
+          const link = document.getElementById("refLink").value;
+          if (navigator.share) {
+            navigator.share({
+              title: "Join Bullpen App",
+              text: "Check this app and earn money!",
+              url: link
+            });
+          } else {
+            alert("শেয়ার করার সুবিধা এই ব্রাউজারে নেই।");
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
