@@ -1,34 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BULLPEN</title>
+  <title>Bullpen</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>BULLPEN</h1>
 
-  <button class="btn">📂 Profile</button>
-  <button class="btn" onclick="openTasks()">📝 Tasks</button>
-  <button class="btn" onclick="openCredits()">💰 Credits: <span id="creditAmount">0</span> ৳</button>
-  <button class="btn">⚙️ Settings</button>
-  <button class="btn">❌ Logout</button>
+  <!-- Header / Banner -->
+  <header>
+    <img src="banner.jpg" alt="Banner" class="banner">
+  </header>
 
-  <!-- Hidden Task Section -->
-  <div id="taskSection" style="display:none; margin-top:20px;">
-    <h2>📝 Daily Tasks</h2>
-    <button id="checkinBtn" class="btn">✅ Check In</button>
-    <button class="btn" onclick="closeTasks()">⬅ Back</button>
+  <!-- Menu Shortcuts -->
+  <section class="shortcuts">
+    <div class="item">➕ রিচার্জ</div>
+    <div class="item">🎧 অনলাইন</div>
+    <div class="item">📍 চ্যানেল</div>
+    <div class="item">👥 দল</div>
+    <div class="item">💰 প্রত্যাহার</div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="active">প্ল্যান A</button>
+    <button>প্ল্যান B</button>
+    <button>প্ল্যান C</button>
   </div>
 
-  <!-- Hidden Credit Section -->
-  <div id="creditSection" style="display:none; margin-top:20px;">
-    <h2>💰 Credit Options</h2>
-    <button onclick="deposit()" class="btn">➕ Deposit</button>
-    <button onclick="withdraw()" class="btn">➖ Withdraw</button>
-    <button class="btn" onclick="closeCredits()">⬅ Back</button>
-  </div>
+  <!-- Product Card -->
+  <section class="card">
+    <h2>CALPINE 1</h2>
+    <p class="sub">দৈনিক আয় দৈনিক উত্তোলন</p>
+    <img src="product.jpg" alt="Product" class="product-img">
+    <p>মূল্য: BDT660 | দৈনিক: BDT132</p>
+    <p>চক্র: 120 দিন | মোট: BDT15840</p>
+    <button class="buy">Buy Now</button>
+  </section>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="active">🏠 হোম</a>
+    <a href="#">➕ আমন্ত্রণ</a>
+    <a href="#">👥 টিম</a>
+    <a href="#">👤 আমার</a>
+  </nav>
 
   <script src="script.js"></script>
 </body>
