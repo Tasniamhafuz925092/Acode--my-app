@@ -1,51 +1,71 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
+/* Reset */
 body {
-  background: #f6fff9;
-  color: #333;
-  padding-bottom: 60px; /* নিচের নেভিগেশনের জন্য জায়গা */
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0fdf4;
+  color: #222;
+  padding-bottom: 60px;
 }
 
-/* ব্যানার */
-.banner {
-  background: #00a651;
+/* Header */
+header {
+  background: #16a34a;
   color: white;
   text-align: center;
   padding: 15px;
+  font-size: 22px;
 }
 
-/* পেজ কনটেন্ট */
+/* Pages */
 .page {
-  display: none;   /* ⚠️ খুব গুরুত্বপূর্ণ */
+  display: none;
   padding: 20px;
 }
 .page.active {
   display: block;
 }
 
-/* নিচের নেভিগেশন */
-.bottom-nav {
+/* Buttons */
+.action-btn {
+  background: #16a34a;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  margin: 5px 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+.action-btn:hover {
+  background: #0f7a33;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Navbar */
+.navbar {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid #ccc;
+  width: 100%;
+  background: #16a34a;
   display: flex;
   justify-content: space-around;
-  padding: 8px 0;
+  padding: 10px 0;
 }
-.bottom-nav a {
-  color: #007a33;
+.navbar a {
+  color: white;
   text-decoration: none;
+  font-size: 16px;
   font-weight: bold;
-  text-align: center;
 }
-.bottom-nav .active {
-  color: #00a651;
+.navbar a.active {
+  text-decoration: underline;
 }
