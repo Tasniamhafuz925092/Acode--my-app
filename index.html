@@ -4,100 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BULLPEN</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #e3f2fd;
-      margin: 0;
-      padding: 50px;
-    }
-    h1 {
-      color: #0d47a1;
-    }
-    button {
-      padding: 12px 25px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      background: #1976d2;
-      color: white;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #0d47a1;
-    }
-    .options {
-      display: none; /* শুরুতে লুকানো */
-      margin-top: 20px;
-    }
-    .options button {
-      display: block;
-      width: 220px;
-      margin: 10px auto;
-    }
-    a {
-      text-decoration: none;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>BULLPEN</h1>
 
-  <!-- Start Button -->
-  <button id="startBtn">Start</button>
+  <button class="btn">📂 Profile</button>
+  <button class="btn" onclick="openTasks()">📝 Tasks</button>
+  <button class="btn" onclick="openCredits()">💰 Credits: <span id="creditAmount">0</span> ৳</button>
+  <button class="btn">⚙️ Settings</button>
+  <button class="btn">❌ Logout</button>
 
-  <!-- Home Options -->
-  <div id="homeOptions" class="options">
-    <button>📂 Profile</button>
-    <button>📝 Tasks</button>
-    <button id="creditsBtn">💰 Credits</button>
-    <button>⚙ Settings</button>
-    <button>❌ Logout</button>
+  <!-- Hidden Task Section -->
+  <div id="taskSection" style="display:none; margin-top:20px;">
+    <h2>📝 Daily Tasks</h2>
+    <button id="checkinBtn" class="btn">✅ Check In</button>
+    <button class="btn" onclick="closeTasks()">⬅ Back</button>
   </div>
 
-  <!-- Credits Options -->
-  <div id="creditsOptions" class="options">
-    <!-- Deposit বাটন এখন deposit.html পেজে নিয়ে যাবে -->
-    <a href="deposit.html">
-      <button id="depositBtn">➕ Deposit</button>
-    </a>
-    <button id="withdrawBtn">➖ Withdraw</button>
-    <button id="backBtn">⬅ Back</button>
+  <!-- Hidden Credit Section -->
+  <div id="creditSection" style="display:none; margin-top:20px;">
+    <h2>💰 Credit Options</h2>
+    <button onclick="deposit()" class="btn">➕ Deposit</button>
+    <button onclick="withdraw()" class="btn">➖ Withdraw</button>
+    <button class="btn" onclick="closeCredits()">⬅ Back</button>
   </div>
 
-  <script>
-    const startBtn = document.getElementById("startBtn");
-    const homeOptions = document.getElementById("homeOptions");
-    const creditsBtn = document.getElementById("creditsBtn");
-    const creditsOptions = document.getElementById("creditsOptions");
-    const backBtn = document.getElementById("backBtn");
-    const withdrawBtn = document.getElementById("withdrawBtn");
-
-    // Start চাপলে Home Options দেখাবে
-    startBtn.addEventListener("click", function() {
-      homeOptions.style.display = "block";
-      startBtn.style.display = "none";
-    });
-
-    // Credits চাপলে Credits Options দেখাবে
-    creditsBtn.addEventListener("click", function() {
-      homeOptions.style.display = "none";
-      creditsOptions.style.display = "block";
-    });
-
-    // Back চাপলে আবার Home Options-এ যাবে
-    backBtn.addEventListener("click", function() {
-      creditsOptions.style.display = "none";
-      homeOptions.style.display = "block";
-    });
-
-    // Withdraw বাটনের কাজ
-    withdrawBtn.addEventListener("click", function() {
-      alert("Withdraw option clicked 💳");
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
