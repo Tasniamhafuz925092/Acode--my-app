@@ -1,33 +1,35 @@
+console.log("Bullpen App Loaded ✅");
 
-console.log("Bullpen app loaded!");
-
-// Tab switcher demo
+// 👉 ট্যাব সুইচ
 document.querySelectorAll(".tabs button").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
     btn.classList.add("active");
-    alert(`"${btn.textContent}" ট্যাবটি নির্বাচিত হয়েছে`);
+    const tabId = btn.getAttribute("data-tab");
+    document.getElementById(tabId).classList.add("active");
   });
 });
 
-// Shortcut clicks
+// 👉 শর্টকাট ক্লিক
 document.querySelectorAll(".shortcuts .item").forEach(item => {
   item.addEventListener("click", () => {
-    alert(`${item.textContent} বোতামটি ক্লিক হয়েছে!`);
+    alert(`${item.textContent} ক্লিক করা হয়েছে ✅`);
   });
 });
 
-// Bottom nav clicks
+// 👉 নিচের নেভিগেশন
 document.querySelectorAll(".bottom-nav a").forEach(link => {
   link.addEventListener("click", e => {
     e.preventDefault();
-    document.querySelectorAll(".bottom-nav a").forEach(a => a.classList.remove("active"));
+    document.querySelectorAll(".bottom-nav a").forEach(l => l.classList.remove("active"));
     link.classList.add("active");
-    alert(`"${link.textContent}" পেজ খোলা হলো`);
+    alert(`${link.textContent} পেজ খোলা হলো ✅`);
   });
 });
 
-// Buy button
+// 👉 কিনুন বাটন
 document.querySelector(".buy").addEventListener("click", () => {
-  alert("ধন্যবাদ! আপনার ক্রয় সম্পন্ন হয়েছে ✅");
+  alert("অভিনন্দন! আপনার অর্ডার সম্পন্ন হয়েছে ✔️");
 });
