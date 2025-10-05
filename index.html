@@ -1,203 +1,161 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bullpen App</title>
+  <title>BULLPEN APP</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0fdf4;
-      color: #333;
-      padding-bottom: 70px;
-    }
-    header {
-      background: #16a34a;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      font-size: 22px;
-    }
-    .page {
-      display: none;
-      padding: 20px;
-    }
-    .page.active {
-      display: block;
-    }
-    .action-btn {
-      background: #16a34a;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      margin: 5px 0;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .action-btn:hover {
-      background: #0f7a33;
-    }
-    input, select {
-      width: 90%;
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    .navbar {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #16a34a;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-    }
-    .navbar a {
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    .navbar a.active {
-      text-decoration: underline;
-    }
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f8fb; }
+    header { background:#1976d2; color:white; padding:15px; text-align:center; font-size:20px; }
+    .container { padding:20px; text-align:center; }
+    button { padding:10px 20px; margin:10px; border:none; border-radius:8px; background:#1976d2; color:white; font-size:16px; cursor:pointer; }
+    button:disabled { background:gray; cursor:not-allowed; }
+    .nav { position:fixed; bottom:0; left:0; right:0; background:white; display:flex; border-top:1px solid #ccc; }
+    .nav button { flex:1; border-radius:0; background:none; color:#1976d2; font-weight:bold; }
+    .hidden { display:none; }
+    .card { background:white; margin:10px auto; padding:15px; border-radius:10px; max-width:400px; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
-  <header>
-    🐂 Bullpen App
-  </header>
+  <header>BULLPEN</header>
 
-  <main>
-    <!-- Home -->
-    <div class="page active" id="home">
-      <h2>🏠 হোম</h2>
-      <button class="action-btn" data-page="withdraw">💸 Withdraw</button>
-      <button class="action-btn" data-page="deposit">💰 Deposit</button>
+  <div class="container" id="home">
+    <div class="card">
+      <h2>Home</h2>
+      <button onclick="withdraw()">Withdraw</button>
+      <button onclick="showDeposit()">Deposit</button>
+      <button id="checkInBtn" onclick="checkIn()" disabled>Check-in (10% Bonus)</button>
     </div>
+  </div>
 
-    <!-- Withdraw -->
-    <div class="page" id="withdraw">
-      <h2>💸 Withdraw</h2>
-      <label>📱 আপনার নাম্বার:</label><br>
-      <input type="text" id="withdrawNumber" placeholder="01XXXXXXXXX"><br>
-
-      <label>📲 পেমেন্ট মেথড:</label><br>
-      <select id="withdrawMethod">
-        <option value="">-- Select Method --</option>
-        <option value="Bkash">Bkash</option>
-        <option value="Nagad">Nagad</option>
-      </select><br>
-
-      <label>💰 টাকার পরিমাণ:</label><br>
-      <input type="number" id="withdrawAmount" placeholder="Amount"><br>
-
-      <button class="action-btn" id="withdrawBtn">Withdraw Now</button>
+  <div class="container hidden" id="deposit">
+    <div class="card">
+      <h2>Deposit</h2>
+      <p>bKash: <b>017XXXXXXXX</b></p>
+      <p>Nagad: <b>018XXXXXXXX</b></p>
+      <button onclick="makeDeposit()">Confirm Deposit</button>
     </div>
+  </div>
 
-    <!-- Deposit -->
-    <div class="page" id="deposit">
-      <h2>💰 Deposit</h2>
-      <p>👉 বিকাশ নাম্বার: <b>01956715958</b></p>
-      <p>👉 নগদ নাম্বার: <b>01956715958</b></p>
-
-      <label>টাকার পরিমাণ বেছে নিন:</label><br>
-      <select id="depositAmount">
-        <option value="">-- Select Amount --</option>
-        <option value="200">৳200</option>
-        <option value="300">৳300</option>
-        <option value="500">৳500</option>
-        <option value="1000">৳1000</option>
-      </select><br><br>
-
-      <button class="action-btn" id="depositBtn">Deposit Now</button>
+  <div class="container hidden" id="profile">
+    <div class="card">
+      <h2>Profile</h2>
+      <p>Balance: <span id="balance">0</span> Taka</p>
+      <p>Daily Income: 40 Taka</p>
     </div>
+  </div>
 
-    <!-- Profile -->
-    <div class="page" id="profile">
-      <h2>👤 প্রোফাইল</h2>
-      <p>💳 Balance: <b id="balance">0 ৳</b></p>
-      <p>📈 Daily Income: <b id="dailyIncome">0 ৳</b></p>
+  <div class="container hidden" id="refer">
+    <div class="card">
+      <h2>Refer</h2>
+      <p>Your referral link:</p>
+      <input type="text" id="refLink" value="https://myapp.com/?ref=USER123" readonly style="width:90%;padding:5px;">
+      <button onclick="copyRef()">Copy Link</button>
+      <button onclick="shareRef()">Share</button>
     </div>
+  </div>
 
-    <!-- Refer -->
-    <div class="page" id="refer">
-      <h2>🔗 Refer & Earn</h2>
-      <p>👉 আপনার রেফার লিঙ্ক:</p>
-      <input type="text" id="refLink" value="https://example.com/ref123" readonly>
-      <button class="action-btn" onclick="copyRef()">Copy Link</button>
+  <div class="container hidden" id="tip">
+    <div class="card">
+      <h2>Tip</h2>
+      <p id="bkashNumber">Click below to fetch bKash from Telegram</p>
+      <button onclick="fetchBkash()">Get bKash Number</button>
     </div>
-  </main>
+  </div>
 
-  <!-- Bottom Navbar -->
-  <div class="navbar">
-    <a href="#" data-page="home" class="active">🏠 Home</a>
-    <a href="#" data-page="profile">👤 Profile</a>
-    <a href="#" data-page="refer">🔗 Refer</a>
+  <div class="nav">
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('profile')">Profile</button>
+    <button onclick="showPage('refer')">Refer</button>
+    <button onclick="showPage('tip')">Tip</button>
   </div>
 
   <script>
-    // Navigation
-    const links = document.querySelectorAll(".navbar a, .action-btn[data-page]");
-    const pages = document.querySelectorAll(".page");
+    let balance = 0;
+    let hasDeposited = false;
+    let referredBonusGiven = false;
+    let lastCheckIn = null;
 
-    links.forEach(link => {
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        const pageId = link.getAttribute("data-page");
-        if (pageId) {
-          pages.forEach(p => p.classList.remove("active"));
-          document.getElementById(pageId).classList.add("active");
+    function showPage(id) {
+      document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
 
-          document.querySelectorAll(".navbar a").forEach(a => a.classList.remove("active"));
-          document.querySelector(`.navbar a[data-page='${pageId}']`)?.classList.add("active");
-        }
-      });
-    });
+    // ✅ Withdraw system
+    function withdraw() {
+      let amount = prompt("Enter withdraw amount:");
+      amount = parseFloat(amount);
 
-    // Withdraw Button -> Telegram
-    document.getElementById("withdrawBtn").addEventListener("click", () => {
-      const number = document.getElementById("withdrawNumber").value;
-      const method = document.getElementById("withdrawMethod").value;
-      const amount = document.getElementById("withdrawAmount").value;
-
-      if (!number || !method || !amount) {
-        alert("সব তথ্য পূরণ করুন!");
+      if (isNaN(amount) || amount <= 0) {
+        alert("Invalid amount!");
         return;
       }
 
-      const msg = `Withdraw Request:\nNumber: ${number}\nMethod: ${method}\nAmount: ${amount}`;
-      window.open(`https://t.me/Bullpenpofficial?text=${encodeURIComponent(msg)}`, "_blank");
-    });
-
-    // Deposit Button -> Telegram + Daily Income Update
-    document.getElementById("depositBtn").addEventListener("click", () => {
-      const amount = document.getElementById("depositAmount").value;
-      if (!amount) {
-        alert("টাকার পরিমাণ সিলেক্ট করুন!");
+      if (amount > balance) {
+        alert("Not enough balance!");
         return;
       }
 
-      // Balance Update
-      document.getElementById("balance").innerText = amount + " ৳";
-      
-      // Daily Income = 10% of Deposit
-      let income = amount * 0.10;
-      document.getElementById("dailyIncome").innerText = income + " ৳";
+      balance -= amount;
+      document.getElementById('balance').innerText = balance.toFixed(2);
+      alert("Withdraw successful! You withdrew " + amount + " Taka.");
+    }
 
-      const msg = `Deposit Request:\nAmount: ${amount}\nDaily Income: ${income}`;
-      window.open(`https://t.me/Bullpenpofficial?text=${encodeURIComponent(msg)}`, "_blank");
-    });
+    // ✅ Deposit system
+    function showDeposit() {
+      showPage('deposit');
+    }
 
-    // Copy Refer Link
+    function makeDeposit() {
+      balance += 100; // demo deposit
+      document.getElementById('balance').innerText = balance;
+      hasDeposited = true;
+      document.getElementById('checkInBtn').disabled = false;
+
+      if (!referredBonusGiven) {
+        balance += 20; // 20% bonus (demo)
+        referredBonusGiven = true;
+        alert("You got 20% referral bonus!");
+      }
+      alert("Deposit successful!");
+      showPage('profile');
+    }
+
+    // ✅ Check-in system
+    function checkIn() {
+      let today = new Date().toDateString();
+      if (lastCheckIn === today) {
+        alert("You already checked in today!");
+        return;
+      }
+      let bonus = balance * 0.10;
+      balance += bonus;
+      document.getElementById('balance').innerText = balance.toFixed(2);
+      lastCheckIn = today;
+      alert("Check-in successful! You got 10% bonus.");
+    }
+
+    // ✅ Referral system
     function copyRef() {
-      const refLink = document.getElementById("refLink");
-      refLink.select();
+      let copyText = document.getElementById("refLink");
+      copyText.select();
       document.execCommand("copy");
-      alert("লিঙ্ক কপি হয়েছে!");
+      alert("Referral link copied!");
+    }
+
+    function shareRef() {
+      let link = document.getElementById("refLink").value;
+      if (navigator.share) {
+        navigator.share({ title: "Join BULLPEN", url: link });
+      } else {
+        alert("Sharing not supported, copy the link instead.");
+      }
+    }
+
+    // ✅ Telegram থেকে bKash fetch
+    function fetchBkash() {
+      // Demo fetch
+      document.getElementById("bkashNumber").innerText = "Fetched from Telegram: 01712345678";
     }
   </script>
 </body>
