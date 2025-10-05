@@ -1,80 +1,93 @@
+/* Modern Bullpen style */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Noto Sans Bengali", Arial, sans-serif;
 }
 
 body {
-  background: #fff;
+  background: #f6fff8;
   color: #333;
-  padding-bottom: 70px;
+  padding-bottom: 80px;
 }
 
 /* Banner */
 .banner {
   width: 100%;
-  height: 200px;
+  height: 160px;
   object-fit: cover;
+  border-bottom: 2px solid #00a651;
 }
 
 /* Shortcuts */
 .shortcuts {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
   padding: 10px;
   background: #fff;
 }
 
 .shortcuts .item {
-  text-align: center;
-  font-size: 14px;
-  color: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #e9f9ef;
+  border-radius: 10px;
+  color: #007a33;
   font-weight: bold;
   cursor: pointer;
-  margin: 5px;
+  transition: all 0.2s;
+}
+
+.shortcuts .item:hover {
+  background: #00a651;
+  color: #fff;
 }
 
 /* Tabs */
 .tabs {
   display: flex;
   justify-content: space-around;
-  background: #f2f2f2;
-  margin: 10px 0;
+  margin: 15px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .tabs button {
   flex: 1;
   padding: 10px;
   border: none;
-  background: #ddd;
+  background: #e0e0e0;
   font-size: 14px;
   cursor: pointer;
+  font-weight: bold;
+  color: #333;
 }
 
 .tabs .active {
-  background: green;
+  background: #00a651;
   color: white;
 }
 
 /* Product Card */
 .card {
-  background: #fff;
+  background: white;
   margin: 15px;
   padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   text-align: center;
 }
 
 .card h2 {
-  margin-bottom: 5px;
+  color: #00a651;
 }
 
 .card .sub {
-  color: red;
-  font-size: 14px;
+  color: #ff3b30;
   margin-bottom: 10px;
 }
 
@@ -85,39 +98,39 @@ body {
 }
 
 .buy {
-  background: green;
+  background: #00a651;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .buy:hover {
-  background: darkgreen;
+  background: #007a33;
 }
 
-/* Bottom Nav */
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
-  border-top: 1px solid #ddd;
+  background: white;
+  border-top: 1px solid #ccc;
   display: flex;
   justify-content: space-around;
   padding: 8px 0;
 }
 
 .bottom-nav a {
+  color: #007a33;
   text-decoration: none;
-  color: green;
-  font-size: 14px;
+  font-weight: bold;
   text-align: center;
 }
 
 .bottom-nav .active {
-  font-weight: bold;
+  color: #00a651;
 }
