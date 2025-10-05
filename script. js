@@ -1,2 +1,33 @@
-// Future interactivity
-console.log("Website Loaded!");
+
+console.log("Bullpen app loaded!");
+
+// Tab switcher demo
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    alert(`"${btn.textContent}" ট্যাবটি নির্বাচিত হয়েছে`);
+  });
+});
+
+// Shortcut clicks
+document.querySelectorAll(".shortcuts .item").forEach(item => {
+  item.addEventListener("click", () => {
+    alert(`${item.textContent} বোতামটি ক্লিক হয়েছে!`);
+  });
+});
+
+// Bottom nav clicks
+document.querySelectorAll(".bottom-nav a").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    document.querySelectorAll(".bottom-nav a").forEach(a => a.classList.remove("active"));
+    link.classList.add("active");
+    alert(`"${link.textContent}" পেজ খোলা হলো`);
+  });
+});
+
+// Buy button
+document.querySelector(".buy").addEventListener("click", () => {
+  alert("ধন্যবাদ! আপনার ক্রয় সম্পন্ন হয়েছে ✅");
+});
