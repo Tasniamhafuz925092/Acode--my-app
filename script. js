@@ -22,6 +22,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Withdraw
+  const withdrawBtn = document.getElementById("withdrawBtn");
+  if (withdrawBtn) {
+    withdrawBtn.addEventListener("click", () => {
+      const amount = document.getElementById("withdrawAmount").value;
+      const number = document.getElementById("userBkash").innerText;
+      if (amount) {
+        alert(`৳${amount} টাকা ${number} নাম্বারে পাঠানো হলো ✅`);
+      } else {
+        alert("দয়া করে টাকার পরিমাণ লিখুন!");
+      }
+    });
+  }
+
   // Copy referral link
   const copyBtn = document.getElementById("copyLink");
   if (copyBtn) {
@@ -33,21 +47,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Send Money Button
-  const sendMoneyBtn = document.getElementById("sendMoney");
-  if (sendMoneyBtn) {
-    sendMoneyBtn.addEventListener("click", () => {
-      const number = document.getElementById("bkashNumber").value;
-      const amount = document.getElementById("amount").value;
-      if (number && amount) {
-        alert(`৳${amount} sent to ${number} successfully ✅`);
+  // Share referral link
+  const shareBtn = document.getElementById("shareLink");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () => {
+      const link = document.getElementById("refLink").value;
+      if (navigator.share) {
+        navigator.share({
+          title: "Join Bullpen App",
+          text: "Check this app and earn money!",
+          url: link
+        });
       } else {
-        alert("দয়া করে নাম্বার আর টাকা লিখুন!");
+        alert("শেয়ার করার সুবিধা এই ব্রাউজারে নেই।");
       }
     });
   }
 
-  // Helper Functions
   function showPage(id) {
     pages.forEach(p => p.classList.remove("active"));
     document.getElementById(id).classList.add("active");
