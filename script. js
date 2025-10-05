@@ -5,11 +5,11 @@ document.querySelectorAll(".bottom-nav a").forEach(link => {
   link.addEventListener("click", e => {
     e.preventDefault();
 
-    // সব active রিমুভ করা
+    // সব active মুছে ফেলো
     document.querySelectorAll(".bottom-nav a").forEach(l => l.classList.remove("active"));
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
 
-    // নতুন active সেট করা
+    // নতুন active সেট করো
     link.classList.add("active");
     const pageId = link.getAttribute("data-page");
     document.getElementById(pageId).classList.add("active");
