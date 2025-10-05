@@ -199,19 +199,51 @@
         });
       });
 
-      // Withdraw
-      const withdrawBtn = document.getElementById("withdrawBtn");
-      if (withdrawBtn) {
-        withdrawBtn.addEventListener("click", () => {
-          const amount = document.getElementById("withdrawAmount").value;
-          const number = document.getElementById("userBkash").innerText;
-          if (amount) {
-            alert(`৳${amount} টাকা ${number} নাম্বারে পাঠানো হলো ✅`);
-          } else {
-            alert("দয়া করে টাকার পরিমাণ লিখুন!");
-          }
-        });
-      }
+    <!-- Withdraw -->
+<div class="page" id="withdraw">
+  <!-- এখানে আগের কোড ছিল, সেটা মুছে দিয়ে নতুন কোড বসাও -->
+  
+  <div style="padding:20px;">
+    <h2>💸 Withdraw</h2>
+
+    <label>📱 আপনার নাম্বার:</label><br>
+    <input type="text" id="withdrawNumber" placeholder="01XXXXXXXXX" style="padding:8px;width:90%;margin:5px 0;"><br>
+
+    <label>📲 পেমেন্ট মেথড:</label><br>
+    <select id="withdrawMethod" style="padding:8px;width:90%;margin:5px 0;">
+      <option value="">-- Select Method --</option>
+      <option value="Bkash">Bkash</option>
+      <option value="Nagad">Nagad</option>
+    </select><br>
+
+    <label>💰 টাকার পরিমাণ:</label><br>
+    <input type="number" id="withdrawAmount" placeholder="Amount" style="padding:8px;width:90%;margin:5px 0;"><br>
+
+    <button id="withdrawBtn" style="padding:10px 20px;background:#1b5e20;color:white;border:none;border-radius:5px;">
+      Withdraw Now
+    </button>
+  </div>
+</div>
+
+<script>
+  document.getElementById("withdrawBtn").addEventListener("click", () => {
+    const number = document.getElementById("withdrawNumber").value;
+    const method = document.getElementById("withdrawMethod").value;
+    const amount = document.getElementById("withdrawAmount").value;
+
+    if (!number || !method || !amount) {
+      alert("⚠ সব ফিল্ড পূরণ করুন!");
+      return;
+    }
+
+    // Telegram Username
+    let telegramUser = "Bullpenpofficial";
+    let message = `📤 Withdraw Request\n\nMethod: ${method}\nNumber: ${number}\nAmount: ${amount}৳`;
+
+    let url = `https://t.me/${telegramUser}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  });
+</script>
 
       // Copy Referral
       const copyBtn = document.getElementById("copyLink");
