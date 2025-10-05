@@ -5,38 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BULLPEN APP</title>
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f8fb; }
-    header { background:#1976d2; color:white; padding:15px; text-align:center; font-size:20px; }
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#e3f2fd; }
+    header { background:#0d47a1; color:white; padding:15px; text-align:center; font-size:20px; }
     .container { padding:20px; text-align:center; }
-    button { padding:10px 20px; margin:10px; border:none; border-radius:8px; background:#1976d2; color:white; font-size:16px; cursor:pointer; }
+    button { 
+      padding:10px 20px; margin:10px; border:none; border-radius:8px; 
+      background:#1976d2; color:white; font-size:16px; cursor:pointer; 
+      box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    }
     button:disabled { background:gray; cursor:not-allowed; }
-    .nav { position:fixed; bottom:0; left:0; right:0; background:white; display:flex; border-top:1px solid #ccc; }
-    .nav button { flex:1; border-radius:0; background:none; color:#1976d2; font-weight:bold; }
+    select, input {
+      padding:10px; margin:10px; border-radius:8px; border:1px solid #1976d2;
+      font-size:16px; width:80%;
+    }
+    .nav { position:fixed; bottom:0; left:0; right:0; background:#1565c0; display:flex; border-top:1px solid #0d47a1; }
+    .nav button { flex:1; border-radius:0; background:none; color:white; font-weight:bold; padding:15px 0; }
     .hidden { display:none; }
-    .card { background:white; margin:10px auto; padding:15px; border-radius:10px; max-width:400px; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+    .card { background:white; margin:10px auto; padding:15px; border-radius:10px; max-width:400px; box-shadow:0 2px 5px rgba(0,0,0,0.3); }
   </style>
 </head>
 <body>
   <header>BULLPEN</header>
 
+  <!-- Home -->
   <div class="container" id="home">
     <div class="card">
       <h2>Home</h2>
-      <button onclick="withdraw()">Withdraw</button>
+      <button onclick="showWithdraw()">Withdraw</button>
       <button onclick="showDeposit()">Deposit</button>
       <button id="checkInBtn" onclick="checkIn()" disabled>Check-in (10% Bonus)</button>
     </div>
   </div>
 
+  <!-- Deposit -->
   <div class="container hidden" id="deposit">
     <div class="card">
       <h2>Deposit</h2>
-      <p>bKash: <b>017XXXXXXXX</b></p>
-      <p>Nagad: <b>018XXXXXXXX</b></p>
+      <input type="text" id="depName" placeholder="Enter Your Name"><br>
+
+      <label>Select Amount:</label><br>
+      <select id="depAmount">
+        <option value="100">100 Taka</option>
+        <option value="200">200 Taka</option>
+        <option value="500">500 Taka</option>
+        <option value="1000">1000 Taka</option>
+      </select><br>
+
+      <label>Select Method:</label><br>
+      <select id="depMethod">
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+      </select><br>
+
       <button onclick="makeDeposit()">Confirm Deposit</button>
     </div>
   </div>
 
+  <!-- Withdraw -->
+  <div class="container hidden" id="withdraw">
+    <div class="card">
+      <h2>Withdraw</h2>
+      <input type="text" id="wdName" placeholder="Enter Your Name"><br>
+
+      <label>Enter Amount:</label><br>
+      <input type="number" id="wdAmount" placeholder="Amount"><br>
+
+      <label>Select Method:</label><br>
+      <select id="wdMethod">
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+      </select><br>
+
+      <button onclick="makeWithdraw()">Confirm Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Profile -->
   <div class="container hidden" id="profile">
     <div class="card">
       <h2>Profile</h2>
@@ -45,6 +89,7 @@
     </div>
   </div>
 
+  <!-- Refer -->
   <div class="container hidden" id="refer">
     <div class="card">
       <h2>Refer</h2>
@@ -55,19 +100,11 @@
     </div>
   </div>
 
-  <div class="container hidden" id="tip">
-    <div class="card">
-      <h2>Tip</h2>
-      <p id="bkashNumber">Click below to fetch bKash from Telegram</p>
-      <button onclick="fetchBkash()">Get bKash Number</button>
-    </div>
-  </div>
-
+  <!-- Bottom Nav -->
   <div class="nav">
     <button onclick="showPage('home')">Home</button>
     <button onclick="showPage('profile')">Profile</button>
     <button onclick="showPage('refer')">Refer</button>
-    <button onclick="showPage('tip')">Tip</button>
   </div>
 
   <script>
@@ -81,13 +118,46 @@
       document.getElementById(id).classList.remove('hidden');
     }
 
-    // ✅ Withdraw system
-    function withdraw() {
-      let amount = prompt("Enter withdraw amount:");
-      amount = parseFloat(amount);
+    function showDeposit() { showPage('deposit'); }
+    function showWithdraw() { showPage('withdraw'); }
 
-      if (isNaN(amount) || amount <= 0) {
-        alert("Invalid amount!");
+    // ✅ Deposit system
+    function makeDeposit() {
+      let name = document.getElementById("depName").value;
+      let amount = parseInt(document.getElementById("depAmount").value);
+      let method = document.getElementById("depMethod").value;
+
+      if (name.trim() === "" || isNaN(amount) || method === "") {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      balance += amount;
+      document.getElementById('balance').innerText = balance;
+
+      hasDeposited = true;
+      document.getElementById('checkInBtn').disabled = false;
+
+      // referral bonus (demo)
+      if (!referredBonusGiven) {
+        balance += amount * 0.20; // 20% bonus
+        referredBonusGiven = true;
+        alert("You got 20% referral bonus!");
+      }
+
+      // টেলিগ্রামে পাঠানো
+      let message = `Deposit Request:%0AName: ${name}%0AAmount: ${amount} Taka%0AMethod: ${method}`;
+      window.location.href = `https://t.me/Bullpenpofficial?text=${message}`;
+    }
+
+    // ✅ Withdraw system
+    function makeWithdraw() {
+      let name = document.getElementById("wdName").value;
+      let amount = parseInt(document.getElementById("wdAmount").value);
+      let method = document.getElementById("wdMethod").value;
+
+      if (name.trim() === "" || isNaN(amount) || method === "") {
+        alert("Please fill all fields!");
         return;
       }
 
@@ -97,28 +167,11 @@
       }
 
       balance -= amount;
-      document.getElementById('balance').innerText = balance.toFixed(2);
-      alert("Withdraw successful! You withdrew " + amount + " Taka.");
-    }
-
-    // ✅ Deposit system
-    function showDeposit() {
-      showPage('deposit');
-    }
-
-    function makeDeposit() {
-      balance += 100; // demo deposit
       document.getElementById('balance').innerText = balance;
-      hasDeposited = true;
-      document.getElementById('checkInBtn').disabled = false;
 
-      if (!referredBonusGiven) {
-        balance += 20; // 20% bonus (demo)
-        referredBonusGiven = true;
-        alert("You got 20% referral bonus!");
-      }
-      alert("Deposit successful!");
-      showPage('profile');
+      // টেলিগ্রামে পাঠানো
+      let message = `Withdraw Request:%0AName: ${name}%0AAmount: ${amount} Taka%0AMethod: ${method}`;
+      window.location.href = `https://t.me/Bullpenpofficial?text=${message}`;
     }
 
     // ✅ Check-in system
@@ -150,12 +203,6 @@
       } else {
         alert("Sharing not supported, copy the link instead.");
       }
-    }
-
-    // ✅ Telegram থেকে bKash fetch
-    function fetchBkash() {
-      // Demo fetch
-      document.getElementById("bkashNumber").innerText = "Fetched from Telegram: 01712345678";
     }
   </script>
 </body>
