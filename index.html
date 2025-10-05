@@ -7,42 +7,59 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- ব্যানার -->
-  <div class="banner">
+  <!-- হেডার -->
+  <header>
     <h1>🐂 Bullpen App</h1>
-  </div>
+  </header>
 
   <!-- পেজ কনটেন্ট -->
-  <div id="pages">
+  <main>
+    <!-- Home -->
     <div class="page active" id="home">
-      <h2>🏠 Home</h2>
-      <p>The content of the home page can be seen here.</p>
+      <h2>🏠 হোম</h2>
+      <button class="action-btn" data-page="withdraw">Withdraw</button>
+      <button class="action-btn" data-page="deposit">Deposit</button>
     </div>
 
-    <div class="page" id="invite">
-      <h2>➕ Invitation</h2>
-      <p>Here you can show invite links, referral codes, etc.</p>
+    <!-- Withdraw -->
+    <div class="page" id="withdraw">
+      <h2>💸 Withdraw</h2>
+      <label>বিকাশ নাম্বার:</label><br>
+      <input type="text" id="bkashNumber" placeholder="01XXXXXXXXX"><br><br>
+      <label>টাকার পরিমাণ:</label><br>
+      <input type="number" id="amount" placeholder="Amount"><br><br>
+      <button class="action-btn" id="sendMoney">Send Money</button>
     </div>
 
-    <div class="page" id="team">
-      <h2>👥 Team</h2>
-      <p>Here you can see information about team members.</p>
+    <!-- Deposit -->
+    <div class="page" id="deposit">
+      <h2>💰 Deposit</h2>
+      <p>👉 বিকাশ নাম্বার: <b>017XXXXXXXX</b></p>
+      <p>👉 নগদ নাম্বার: <b>018XXXXXXXX</b></p>
+      <button class="action-btn">Send Money</button>
     </div>
 
-    <div class="page" id="my">
-      <h2>👤 My profile</h2>
-      <p>This will contain the user's name, balance, settings, etc.</p>
+    <!-- Profile -->
+    <div class="page" id="profile">
+      <h2>👤 প্রোফাইল</h2>
+      <p>ব্যালেন্স: <span id="balance">৳500</span></p>
     </div>
-  </div>
+
+    <!-- Refer -->
+    <div class="page" id="refer">
+      <h2>🔗 Refer & Earn</h2>
+      <p>তোমার রেফারেল লিংক:</p>
+      <input type="text" id="refLink" value="https://bullpenapp.com/ref123" readonly>
+      <button class="action-btn" id="copyLink">Copy</button>
+    </div>
+  </main>
 
   <!-- নিচের নেভিগেশন -->
-  <div class="bottom-nav">
+  <nav class="navbar">
     <a href="#" class="active" data-page="home">🏠 Home</a>
-    <a href="#" data-page="invite">➕ Invitation</a>
-    <a href="#" data-page="team">👥 Team</a>
-    <a href="#" data-page="my">👤 Profile</a>
-  </div>
+    <a href="#" data-page="profile">👤 Profile</a>
+    <a href="#" data-page="refer">🔗 Refer</a>
+  </nav>
 
   <script src="script.js"></script>
 </body>
