@@ -8,6 +8,7 @@
 body {
   background: #fff;
   color: #333;
+  padding-bottom: 70px;
 }
 
 /* Banner */
@@ -21,14 +22,18 @@ body {
 .shortcuts {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   padding: 10px;
   background: #fff;
 }
+
 .shortcuts .item {
   text-align: center;
   font-size: 14px;
   color: green;
   font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
 }
 
 /* Tabs */
@@ -38,13 +43,16 @@ body {
   background: #f2f2f2;
   margin: 10px 0;
 }
+
 .tabs button {
   flex: 1;
   padding: 10px;
   border: none;
   background: #ddd;
   font-size: 14px;
+  cursor: pointer;
 }
+
 .tabs .active {
   background: green;
   color: white;
@@ -59,19 +67,23 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   text-align: center;
 }
+
 .card h2 {
   margin-bottom: 5px;
 }
+
 .card .sub {
   color: red;
   font-size: 14px;
   margin-bottom: 10px;
 }
+
 .product-img {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 10px;
 }
+
 .buy {
   background: green;
   color: white;
@@ -81,6 +93,7 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
+
 .buy:hover {
   background: darkgreen;
 }
@@ -97,12 +110,14 @@ body {
   justify-content: space-around;
   padding: 8px 0;
 }
+
 .bottom-nav a {
   text-decoration: none;
   color: green;
   font-size: 14px;
   text-align: center;
 }
+
 .bottom-nav .active {
   font-weight: bold;
 }
