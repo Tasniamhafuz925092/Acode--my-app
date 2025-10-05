@@ -1,15 +1,14 @@
-/* বেসিক স্টাইল */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Noto Sans Bengali", Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 body {
   background: #f6fff9;
   color: #333;
-  padding-bottom: 60px; /* নিচের নেভিগেশনের জন্য স্পেস */
+  padding-bottom: 60px; /* নিচের নেভিগেশনের জন্য জায়গা */
 }
 
 /* ব্যানার */
@@ -22,7 +21,7 @@ body {
 
 /* পেজ কনটেন্ট */
 .page {
-  display: none;
+  display: none;   /* ⚠️ খুব গুরুত্বপূর্ণ */
   padding: 20px;
 }
 .page.active {
