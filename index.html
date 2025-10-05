@@ -7,12 +7,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- হেডার -->
   <header>
     <h1>🐂 Bullpen App</h1>
   </header>
 
-  <!-- পেজ কনটেন্ট -->
   <main>
     <!-- Home -->
     <div class="page active" id="home">
@@ -24,11 +22,10 @@
     <!-- Withdraw -->
     <div class="page" id="withdraw">
       <h2>💸 Withdraw</h2>
-      <label>বিকাশ নাম্বার:</label><br>
-      <input type="text" id="bkashNumber" placeholder="01XXXXXXXXX"><br><br>
+      <p>আপনার বিকাশ নাম্বার: <b id="userBkash">017XXXXXXXX</b></p>
       <label>টাকার পরিমাণ:</label><br>
-      <input type="number" id="amount" placeholder="Amount"><br><br>
-      <button class="action-btn" id="sendMoney">Send Money</button>
+      <input type="number" id="withdrawAmount" placeholder="Amount"><br><br>
+      <button class="action-btn" id="withdrawBtn">Send Money</button>
     </div>
 
     <!-- Deposit -->
@@ -43,6 +40,7 @@
     <div class="page" id="profile">
       <h2>👤 প্রোফাইল</h2>
       <p>ব্যালেন্স: <span id="balance">৳500</span></p>
+      <p>দৈনিক আয়: <span>৳40</span></p>
     </div>
 
     <!-- Refer -->
@@ -51,10 +49,10 @@
       <p>তোমার রেফারেল লিংক:</p>
       <input type="text" id="refLink" value="https://bullpenapp.com/ref123" readonly>
       <button class="action-btn" id="copyLink">Copy</button>
+      <button class="action-btn" id="shareLink">Share</button>
     </div>
   </main>
 
-  <!-- নিচের নেভিগেশন -->
   <nav class="navbar">
     <a href="#" class="active" data-page="home">🏠 Home</a>
     <a href="#" data-page="profile">👤 Profile</a>
