@@ -3,48 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bullpen</title>
+  <title>Bullpen App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header / Banner -->
-  <header>
-    <img src="banner.jpg" alt="Banner" class="banner">
-  </header>
 
-  <!-- Menu Shortcuts -->
-  <section class="shortcuts">
-    <div class="item" id="download">⬇️ ডাউনলোড</div>
-    <div class="item" id="profile">🏢 কোম্পানি প্রোফাইল</div>
-    <div class="item" id="record">📄 অ্যাকাউন্ট রেকর্ড</div>
-    <div class="item" id="savings">💰 আমার সংগ্রহ</div>
-    <div class="item" id="bank">🏦 ব্যাংক এবং পাসওয়ার্ড</div>
-  </section>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="active" id="tab1">প্রথম</button>
-    <button id="tab2">দ্বিতীয়</button>
-    <button id="tab3">তৃতীয়</button>
+  <!-- ব্যানার -->
+  <div class="banner">
+    <h1>🐂 Bullpen App</h1>
   </div>
 
-  <!-- Product Card -->
-  <section class="card">
-    <h2>Bullpen 🏆</h2>
-    <p class="sub">দৈনিক উপার্জন</p>
-    <img src="product.jpg" alt="Product" class="product-img">
-    <p>মূল্য: BDT 120</p>
-    <p>কোড: BDT15840</p>
-    <button class="buy">Buy Now</button>
-  </section>
+  <!-- শর্টকাট বাটন -->
+  <div class="shortcuts">
+    <div class="item">⬇️ ডাউনলোড</div>
+    <div class="item">🏢 কোম্পানি প্রোফাইল</div>
+    <div class="item">📄 অ্যাকাউন্ট রেকর্ড</div>
+    <div class="item">💰 আমার কালেকশন</div>
+    <div class="item">🏦 ব্যাংক ও পাসওয়ার্ড</div>
+  </div>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <a href="#" class="active" id="home">🏠 হোম</a>
-    <a href="#" id="invite">➕ আমন্ত্রণ</a>
-    <a href="#" id="team">👥 টিম</a>
-    <a href="#" id="account">👤 আমার</a>
-  </nav>
+  <!-- ট্যাব -->
+  <div class="tabs">
+    <button data-tab="first" class="active">প্রথম</button>
+    <button data-tab="second">দ্বিতীয়</button>
+    <button data-tab="third">তৃতীয়</button>
+  </div>
+
+  <!-- ট্যাব কনটেন্ট -->
+  <div class="tab-content active" id="first">
+    <div class="card">
+      <h2>Bullpen 🏆</h2>
+      <p class="sub">ডেইলি আয়ের সুযোগ</p>
+      <img src="https://via.placeholder.com/200" alt="Product" class="product-img">
+      <p>Price: BDT 120</p>
+      <p>Code: BDT15840</p>
+      <button class="buy">কিনুন এখনি</button>
+    </div>
+  </div>
+
+  <div class="tab-content" id="second">
+    <h2>দ্বিতীয় ট্যাব</h2>
+    <p>এখানে দ্বিতীয় ট্যাবের কনটেন্ট দেখা যাবে।</p>
+  </div>
+
+  <div class="tab-content" id="third">
+    <h2>তৃতীয় ট্যাব</h2>
+    <p>এখানে তৃতীয় ট্যাবের কনটেন্ট দেখা যাবে।</p>
+  </div>
+
+  <!-- নিচের নেভিগেশন -->
+  <div class="bottom-nav">
+    <a href="#" class="active" data-page="home">🏠 হোম</a>
+    <a href="#" data-page="invite">➕ আমন্ত্রণ</a>
+    <a href="#" data-page="team">👥 টিম</a>
+    <a href="#" data-page="my">👤 প্রোফাইল</a>
+  </div>
 
   <script src="script.js"></script>
 </body>
