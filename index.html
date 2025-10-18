@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BULLPEN - Final</title>
+  <title>BULLPEN - Final (with payment number)</title>
   <style>
     body { font-family: Arial, sans-serif; margin:0; background:#f3f6fb; color:#0f172a; }
     header { background:#2563eb; color:#fff; padding:14px 16px; text-align:center; font-weight:700; }
@@ -22,8 +22,8 @@
     .small { font-size:13px; color:#374151; }
     .muted { color:#6b7280; font-size:13px; }
     .pending { background:#fff7ed; padding:8px; border-radius:8px; margin-top:8px; }
-    table { width:100%; border-collapse:collapse; }
-    td, th { padding:8px; border-bottom:1px solid #f1f5f9; text-align:left; font-size:14px; }
+    .paybox { display:flex; gap:8px; align-items:center; margin-top:8px; }
+    .paynum { font-weight:700; font-size:16px; background:#f1f5f9; padding:8px 10px; border-radius:8px; }
   </style>
 </head>
 <body>
@@ -45,6 +45,12 @@
     <label>Transaction ID (Txn ID)</label>
     <input id="depositTxnId" type="text" placeholder="Enter Transaction ID from bkash/nagad">
 
+    <div class="paybox">
+      <div class="paynum" id="paymentNumber">01956715958</div>
+      <button onclick="copyPaymentNumber()">Copy Number</button>
+      <button onclick="callPaymentNumber()">Call</button>
+    </div>
+
     <div style="margin-top:10px;">
       <button onclick="submitDeposit()">Submit Deposit (Pending)</button>
       <button class="gray" onclick="goPage('profile')">My Profile</button>
@@ -54,6 +60,14 @@
     <h3>Withdraw</h3>
     <label>Amount (৳)</label>
     <input id="withdrawAmount" type="number" placeholder="Enter withdraw amount">
+
+    <div class="paybox">
+      <div class="muted small">Withdraw will be sent to:</div>
+      <div class="paynum" id="withdrawPaymentNumber">01956715958</div>
+      <button onclick="copyPaymentNumber()">Copy Number</button>
+      <button onclick="callPaymentNumber()">Call</button>
+    </div>
+
     <div style="margin-top:10px;">
       <button onclick="submitWithdraw()">Request Withdraw (Pending)</button>
     </div>
@@ -143,222 +157,137 @@
 /* -------------------------
    CONFIG / STATE (local)
    ------------------------- */
-const ADMIN_PASSWORD = "Tasnia91223"; // <-- admin password as requested
+const ADMIN_PASSWORD = "Tasnia91223";
+const PAYMENT_NUMBER = "01956715958"; // bKash / Nagad number to display
 
 let state = {
   balance: 0,
-  approvedDeposit: null,   // { amount, method, txnId, approvedAt(ms), dailyAmount }
-  pendingDeposit: null,    // { amount, method, txnId, submittedAt }
-  pendingWithdraw: null,   // { amount, submittedAt }
-  history: [],             // array of {type, desc, time}
+  approvedDeposit: null,
+  pendingDeposit: null,
+  pendingWithdraw: null,
+  history: [],
   referBonusGiven: false,
   lastCheckInDate: null,
   adminLoggedIn: false
 };
 
-/* load saved from localStorage */
+/* load/save */
 function loadState(){
   try {
     const raw = localStorage.getItem('bullpen_state_v1');
-    if(raw) {
-      const s = JSON.parse(raw);
-      Object.assign(state, s || {});
-    }
+    if(raw) Object.assign(state, JSON.parse(raw));
   } catch(e){ console.warn("loadState:", e); }
 }
 function saveState(){
-  try {
-    localStorage.setItem('bullpen_state_v1', JSON.stringify(state));
-  } catch(e){ console.warn("saveState:", e); }
+  try { localStorage.setItem('bullpen_state_v1', JSON.stringify(state)); } catch(e){ console.warn(e); }
 }
 
-/* -------------------------
-   Helper utilities
-   ------------------------- */
-function fmtDate(ts){ return new Date(ts).toLocaleString(); }
 function nowMs(){ return Date.now(); }
 function round2(n){ return Math.round(n*100)/100; }
 
-/* -------------------------
-   UI management
-   ------------------------- */
+/* UI */
 function goPage(page){
-  ['home','profile','refer','admin'].forEach(id => {
-    document.getElementById(id).style.display = (id===page)?'block':'none';
-  });
+  ['home','profile','refer','admin'].forEach(id => document.getElementById(id).style.display = (id===page)?'block':'none');
   renderUI();
 }
-
 function renderUI(){
   document.getElementById('balance').innerText = round2(state.balance);
   document.getElementById('referFlag').innerText = state.referBonusGiven ? 'Yes' : 'No';
   document.getElementById('lastCheckIn').innerText = state.lastCheckInDate || '—';
+  document.getElementById('dailyAmount').innerText = state.approvedDeposit ? round2(state.approvedDeposit.dailyAmount) : 0;
 
-  // daily amount from approved deposit
-  const daily = state.approvedDeposit ? state.approvedDeposit.dailyAmount : 0;
-  document.getElementById('dailyAmount').innerText = round2(daily);
+  // show payment number everywhere
+  document.getElementById('paymentNumber').innerText = PAYMENT_NUMBER;
+  document.getElementById('withdrawPaymentNumber').innerText = PAYMENT_NUMBER;
 
-  // pending lists
-  const pd = state.pendingDeposit;
-  document.getElementById('pendingDeposits').innerHTML = pd ? (
-    `<div class="pending"><strong>Txn:</strong> ${pd.txnId} | <strong>Amt:</strong> ${pd.amount}৳ | <strong>Method:</strong> ${pd.method}</div>`
-  ) : '<div class="muted">No pending deposits</div>';
-
-  const pw = state.pendingWithdraw;
-  document.getElementById('pendingWithdraws').innerHTML = pw ? (
-    `<div class="pending"><strong>Amt:</strong> ${pw.amount}৳ | <span class="small">submitted: ${fmtDate(pw.submittedAt)}</span></div>`
-  ) : '<div class="muted">No pending withdraws</div>';
+  // pending deposit/withdraw
+  document.getElementById('pendingDeposits').innerHTML = state.pendingDeposit ? `<div class="pending"><strong>Txn:</strong> ${state.pendingDeposit.txnId} | <strong>Amt:</strong> ${state.pendingDeposit.amount}৳ | <strong>Method:</strong> ${state.pendingDeposit.method}</div>` : '<div class="muted">No pending deposits</div>';
+  document.getElementById('pendingWithdraws').innerHTML = state.pendingWithdraw ? `<div class="pending"><strong>Amt:</strong> ${state.pendingWithdraw.amount}৳ | <span class="small">${new Date(state.pendingWithdraw.submittedAt).toLocaleString()}</span></div>` : '<div class="muted">No pending withdraws</div>';
 
   // history
   if(state.history.length){
     const rows = state.history.slice().reverse().map(h => `<tr><td>${h.type}</td><td>${h.desc}</td><td>${new Date(h.time).toLocaleString()}</td></tr>`).join('');
     document.getElementById('history').innerHTML = `<table><thead><tr><th>Type</th><th>Desc</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-  } else {
-    document.getElementById('history').innerHTML = '<div class="muted">No history yet</div>';
-  }
+  } else document.getElementById('history').innerHTML = '<div class="muted">No history yet</div>';
 
-  // check-in button enabling only if there's an approved deposit
   document.getElementById('checkInBtn').disabled = !state.approvedDeposit;
-
-  // admin controls
-  if(state.adminLoggedIn){
-    document.getElementById('adminControls').style.display = 'block';
-    document.getElementById('adminPass').value = '';
-  } else {
-    document.getElementById('adminControls').style.display = 'none';
-  }
+  document.getElementById('adminControls').style.display = state.adminLoggedIn ? 'block' : 'none';
 }
+loadState(); renderUI();
 
-/* -------------------------
-   Startup: load and reconcile daily additions
-   ------------------------- */
-loadState();
-
-/* If there's an approved deposit, compute any missed daily additions since last approvedAt:
-   We'll store approvedAt as ms. When approving, we set approvedAt = Date.now()
-   If page closed and reopened after N full days, we add N * dailyAmount to balance and bump approvedAt forward.
-*/
-function reconcileApprovedDeposit(){
+/* reconcile approved deposit daily accrual (simple) */
+function reconcile(){
   if(!state.approvedDeposit) return;
-  const ap = state.approvedDeposit;
   const now = nowMs();
   const msPerDay = 24*60*60*1000;
-  // compute full days passed since approvedAt
+  const ap = state.approvedDeposit;
   const delta = now - (ap.approvedAt || now);
   if(delta < msPerDay) return;
   const days = Math.floor(delta / msPerDay);
   if(days > 0){
     const total = days * ap.dailyAmount;
     state.balance = round2(state.balance + total);
-    // advance approvedAt
-    ap.approvedAt = ap.approvedAt + days * msPerDay;
+    ap.approvedAt = (ap.approvedAt || now) + days*msPerDay;
     state.history.push({type:'auto-daily', desc:`${days} day(s) auto-added ${round2(total)}৳ (daily ${round2(ap.dailyAmount)}৳)`, time: now});
     saveState();
   }
 }
-reconcileApprovedDeposit();
-/* also start runtime interval for adding daily when page is open */
-function startDailyInterval(){
-  if(!state.approvedDeposit) return;
-  // clear existing timer if any
+reconcile();
+if(state.approvedDeposit){
   if(window._dailyInterval) clearInterval(window._dailyInterval);
-  // next add will happen in exactly 24h from now (we already reconciled past full days)
-  window._dailyInterval = setInterval(() => {
-    const ap = state.approvedDeposit;
-    if(!ap) return;
-    state.balance = round2(state.balance + ap.dailyAmount);
-    ap.approvedAt = nowMs();
-    state.history.push({type:'auto-daily', desc:`auto-added ${round2(ap.dailyAmount)}৳`, time: nowMs()});
-    saveState(); renderUI();
-  }, 24*60*60*1000);
+  window._dailyInterval = setInterval(()=>{ state.balance = round2(state.balance + state.approvedDeposit.dailyAmount); state.approvedDeposit.approvedAt = nowMs(); state.history.push({type:'auto-daily', desc:`auto-added ${round2(state.approvedDeposit.dailyAmount)}৳`, time: nowMs()}); saveState(); renderUI(); }, 24*60*60*1000);
 }
-startDailyInterval();
 
-/* initial render */
-renderUI();
-
-/* -------------------------
-   User actions
-   ------------------------- */
+/* User actions */
 function submitDeposit(){
   const amt = Number(document.getElementById('depositAmount').value);
   const method = document.getElementById('depositMethod').value;
   const txn = document.getElementById('depositTxnId').value.trim();
-  if(!amt || !txn){ alert('Amount and Transaction ID required'); return; }
+  if(!amt || !txn){ alert('Amount এবং Transaction ID অবশ্যই দিতে হবে'); return; }
   state.pendingDeposit = { amount: round2(amt), method, txnId: txn, submittedAt: nowMs() };
   state.history.push({type:'deposit-pending', desc:`Txn ${txn} amount ${amt}৳ via ${method}`, time: nowMs()});
-  saveState();
-  renderUI();
-  alert('Deposit submitted and pending admin approval.');
+  saveState(); renderUI(); alert('Deposit submitted এবং Admin approval প্রয়োজন। (পেমেন্ট নম্বর: ' + PAYMENT_NUMBER + ')');
 }
 
 function submitWithdraw(){
   const amt = Number(document.getElementById('withdrawAmount').value);
-  if(!amt){ alert('Enter withdraw amount'); return; }
-  if(amt > state.balance){ alert('Not enough balance'); return; }
+  if(!amt){ alert('Amount দিন'); return; }
+  if(amt > state.balance){ alert('তোমার ব্যালেন্স পর্যাপ্ত নয়'); return; }
   state.pendingWithdraw = { amount: round2(amt), submittedAt: nowMs() };
   state.history.push({type:'withdraw-pending', desc:`Withdraw request ${amt}৳`, time: nowMs()});
-  saveState();
-  renderUI();
-  alert('Withdraw requested and pending admin approval.');
+  saveState(); renderUI(); alert('Withdraw request submitted, Admin approval প্রয়োজন।');
 }
 
 function doCheckIn(){
-  if(!state.approvedDeposit){ alert('No approved deposit yet'); return; }
+  if(!state.approvedDeposit){ alert('কোনো approved deposit নেই'); return; }
   const today = new Date().toDateString();
-  if(state.lastCheckInDate === today){ alert('Already checked in today'); return; }
+  if(state.lastCheckInDate === today){ alert('আজকে আগেই Check-in করেছেন'); return; }
   const bonus = round2(state.approvedDeposit.amount * 0.10);
   state.balance = round2(state.balance + bonus);
   state.lastCheckInDate = today;
   state.history.push({type:'checkin', desc:`Check-in bonus ${bonus}৳`, time: nowMs()});
-  saveState();
-  renderUI();
-  alert('Check-in bonus added: ' + bonus + '৳');
+  saveState(); renderUI(); alert('Check-in bonus যোগ করা হয়েছে: ' + bonus + '৳');
 }
 
-function copyRef(){
-  const el = document.getElementById('referLink');
-  el.select(); el.setSelectionRange(0,99999);
-  document.execCommand('copy');
-  alert('Refer link copied');
-}
-
-/* -------------------------
-   Admin actions
-   ------------------------- */
+/* Admin */
 function adminLogin(){
   const pass = document.getElementById('adminPass').value;
-  if(pass === ADMIN_PASSWORD){
-    state.adminLoggedIn = true;
-    state.adminLoggedAt = nowMs();
-    saveState();
-    renderUI();
-    alert('Admin logged in');
-  } else {
-    alert('Incorrect password');
-  }
+  if(pass === ADMIN_PASSWORD){ state.adminLoggedIn = true; state.adminLoggedAt = nowMs(); saveState(); renderUI(); alert('Admin logged in'); }
+  else alert('Password ভুল');
 }
-
-function adminLogout(){
-  state.adminLoggedIn = false;
-  saveState();
-  renderUI();
-  alert('Admin logged out');
-}
+function adminLogout(){ state.adminLoggedIn = false; saveState(); renderUI(); alert('Admin logged out'); }
 
 function approveDeposit(){
-  if(!state.adminLoggedIn){ alert('Admin login required'); return; }
-  if(!state.pendingDeposit){ alert('No pending deposit'); return; }
+  if(!state.adminLoggedIn){ alert('Admin login করুন'); return; }
+  if(!state.pendingDeposit){ alert('কোনো pending deposit নেই'); return; }
   const id = document.getElementById('approveTxn').value.trim();
-  if(id !== state.pendingDeposit.txnId){ alert('Txn ID mismatch'); return; }
+  if(id !== state.pendingDeposit.txnId){ alert('Txn ID মেলেনি'); return; }
 
-  // Approve: set approvedDeposit and start daily accrual (40% of amount per day)
   const p = state.pendingDeposit;
-  const dailyAmount = round2(p.amount * 0.40); // 40% of deposit per day
+  const dailyAmount = round2(p.amount * 0.40); // প্রতিদিন 40% হিসেবে নেওয়া হয়েছে
   state.approvedDeposit = { amount: p.amount, method: p.method, txnId: p.txnId, approvedAt: nowMs(), dailyAmount };
   state.pendingDeposit = null;
 
-  // Give refer bonus once (10% of deposit) if not yet given
   if(!state.referBonusGiven){
     const referBonus = round2(state.approvedDeposit.amount * 0.10);
     state.balance = round2(state.balance + referBonus);
@@ -366,42 +295,15 @@ function approveDeposit(){
     state.history.push({type:'refer-bonus', desc:`Refer bonus ${referBonus}৳`, time: nowMs()});
   }
 
-  // When approving we do NOT immediately add dailyAmount as a lump sum.
-  // But to reflect user's expectation, we may optionally add today's share only if desired.
-  // We'll not add immediate dailyAmount; instead reconcile logic will add days passed when needed
-  // and start the interval for future daily additions.
-
   state.history.push({type:'deposit-approved', desc:`Deposit ${state.approvedDeposit.amount}৳ approved (daily ${state.approvedDeposit.dailyAmount}৳)`, time: nowMs()});
-  saveState();
-  startDailyInterval();
-  renderUI();
-  alert('Deposit approved. Daily accrual started: ' + state.approvedDeposit.dailyAmount + '৳ per day.');
+  saveState(); renderUI();
+  // start interval
+  if(window._dailyInterval) clearInterval(window._dailyInterval);
+  window._dailyInterval = setInterval(()=>{ state.balance = round2(state.balance + state.approvedDeposit.dailyAmount); state.approvedDeposit.approvedAt = nowMs(); state.history.push({type:'auto-daily', desc:`auto-added ${round2(state.approvedDeposit.dailyAmount)}৳`, time: nowMs()}); saveState(); renderUI(); }, 24*60*60*1000);
+  alert('Deposit approved। Daily accrual চালু হয়েছে: ' + state.approvedDeposit.dailyAmount + '৳/day');
 }
 
 function approveWithdraw(){
-  if(!state.adminLoggedIn){ alert('Admin login required'); return; }
+  if(!state.adminLoggedIn){ alert('Admin login করুন'); return; }
   if(!state.pendingWithdraw){ alert('No pending withdraw'); return; }
-  const amtInput = Number(document.getElementById('approveWithdrawAmt').value);
-  if(!amtInput || amtInput !== state.pendingWithdraw.amount){ alert('Enter the correct withdraw amount to approve'); return; }
-  // Deduct
-  state.balance = round2(state.balance - state.pendingWithdraw.amount);
-  state.history.push({type:'withdraw-approved', desc:`Withdraw ${state.pendingWithdraw.amount}৳ approved`, time: nowMs()});
-  state.pendingWithdraw = null;
-  saveState();
-  renderUI();
-  alert('Withdraw approved and balance deducted.');
-}
-
-/* -------------------------
-   Expose quick debug helpers (optional)
-   ------------------------- */
-window._state = state;
-window._saveState = saveState;
-window._loadState = loadState;
-
-/* ensure UI refresh periodically (for demo) */
-setInterval(() => { reconcileApprovedDeposit(); saveState(); renderUI(); }, 60*1000); // every minute reconcile
-
-</script>
-</body>
-</html>
+  const amtInput = Number(document.getElementById
