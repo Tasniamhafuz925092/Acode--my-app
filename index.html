@@ -1,81 +1,84 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BULLPEN - Final (with payment number)</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin:0; background:#f3f6fb; color:#0f172a; }
-    header { background:#2563eb; color:#fff; padding:14px 16px; text-align:center; font-weight:700; }
-    .wrap { max-width:820px; margin:18px auto; padding:12px; }
-    .card { background:#fff; border-radius:10px; padding:14px; box-shadow:0 6px 18px rgba(16,24,40,0.06); margin-bottom:14px;}
-    label{display:block; margin:6px 0 4px; font-weight:600;}
-    input[type="number"], input[type="text"], input[type="password"], select {
-      width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db; box-sizing:border-box;
-    }
-    button { background:#2563eb; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; }
-    button.gray { background:#6b7280; }
-    .row { display:flex; gap:10px; }
-    .col { flex:1; }
-    nav { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid #e6eefc; display:flex; }
-    nav button { flex:1; padding:12px; border:none; background:transparent; font-weight:600; }
-    .small { font-size:13px; color:#374151; }
-    .muted { color:#6b7280; font-size:13px; }
-    .pending { background:#fff7ed; padding:8px; border-radius:8px; margin-top:8px; }
-    .paybox { display:flex; gap:8px; align-items:center; margin-top:8px; }
-    .paynum { font-weight:700; font-size:16px; background:#f1f5f9; padding:8px 10px; border-radius:8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BULLPEN - Stylish Admin Panel</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  body { font-family: 'Arial', sans-serif; margin:0; background:#f0f4f8; color:#0f172a; }
+  header { background: linear-gradient(90deg,#2563eb,#3b82f6); color:#fff; padding:16px; text-align:center; font-weight:700; font-size:20px; }
+  .wrap { max-width:840px; margin:20px auto; padding:12px; }
+  .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:16px; box-shadow:0 8px 20px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .card:hover { transform: translateY(-5px); box-shadow:0 12px 25px rgba(0,0,0,0.2); }
+  label{display:block; margin:6px 0 4px; font-weight:600;}
+  input[type="number"], input[type="text"], input[type="password"], select {
+    width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db; box-sizing:border-box; transition:0.3s;
+  }
+  input:focus { border-color:#2563eb; outline:none; box-shadow:0 0 5px rgba(37,99,235,0.5); }
+  button { background:#2563eb; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.3s; }
+  button.gray { background:#6b7280; }
+  button:hover { background:#1e40af; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; }
+  .col { flex:1; min-width:200px; }
+  nav { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid #e6eefc; display:flex; }
+  nav button { flex:1; padding:12px; border:none; background:transparent; font-weight:600; cursor:pointer; }
+  nav button:hover { background:#f1f5f9; }
+  .small { font-size:13px; color:#374151; }
+  .muted { color:#6b7280; font-size:13px; }
+  .pending { background:#fff7ed; padding:8px; border-radius:8px; margin-top:8px; }
+  .paybox { display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
+  .paynum { font-weight:700; font-size:16px; background:#f1f5f9; padding:8px 10px; border-radius:8px; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { border:1px solid #d1d5db; padding:6px 8px; text-align:left; }
+  th { background:#f3f4f6; }
+  .admin-card { background: linear-gradient(135deg,#2563eb,#3b82f6); color:white; padding:16px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+  @media(max-width:500px){ .row { flex-direction:column; } }
+</style>
 </head>
 <body>
-<header>BULLPEN — Final (Admin protected)</header>
-
+<header>BULLPEN - Stylish Admin Panel</header>
 <div class="wrap">
   <!-- HOME -->
   <div id="home" class="card">
     <h3>Deposit</h3>
     <label>Amount (৳)</label>
     <input id="depositAmount" type="number" placeholder="Enter amount (e.g. 100)">
-
     <label>Method</label>
     <select id="depositMethod">
       <option value="bkash">bKash</option>
       <option value="nagad">Nagad</option>
     </select>
-
     <label>Transaction ID (Txn ID)</label>
-    <input id="depositTxnId" type="text" placeholder="Enter Transaction ID from bkash/nagad">
-
+    <input id="depositTxnId" type="text" placeholder="Enter Transaction ID">
     <div class="paybox">
       <div class="paynum" id="paymentNumber">01956715958</div>
-      <button onclick="copyPaymentNumber()">Copy Number</button>
-      <button onclick="callPaymentNumber()">Call</button>
+      <button onclick="copyPaymentNumber()"><i class="fa fa-copy"></i> Copy</button>
+      <button onclick="callPaymentNumber()"><i class="fa fa-phone"></i> Call</button>
     </div>
-
     <div style="margin-top:10px;">
-      <button onclick="submitDeposit()">Submit Deposit (Pending)</button>
-      <button class="gray" onclick="goPage('profile')">My Profile</button>
+      <button onclick="submitDeposit()"><i class="fa fa-upload"></i> Submit Deposit</button>
+      <button class="gray" onclick="goPage('profile')"><i class="fa fa-user"></i> My Profile</button>
     </div>
 
     <hr style="margin:12px 0;">
     <h3>Withdraw</h3>
     <label>Amount (৳)</label>
     <input id="withdrawAmount" type="number" placeholder="Enter withdraw amount">
-
     <div class="paybox">
-      <div class="muted small">Withdraw will be sent to:</div>
+      <div class="muted small">Withdraw to:</div>
       <div class="paynum" id="withdrawPaymentNumber">01956715958</div>
-      <button onclick="copyPaymentNumber()">Copy Number</button>
-      <button onclick="callPaymentNumber()">Call</button>
+      <button onclick="copyPaymentNumber()"><i class="fa fa-copy"></i> Copy</button>
+      <button onclick="callPaymentNumber()"><i class="fa fa-phone"></i> Call</button>
     </div>
-
     <div style="margin-top:10px;">
-      <button onclick="submitWithdraw()">Request Withdraw (Pending)</button>
+      <button onclick="submitWithdraw()"><i class="fa fa-download"></i> Request Withdraw</button>
     </div>
 
     <hr style="margin:12px 0;">
     <h3>Daily Check-in</h3>
     <p class="muted">Deposit approved হলে প্রতিদিন একবার Check-in করে deposit-এর 10% পাওয়া যাবে।</p>
-    <button id="checkInBtn" onclick="doCheckIn()" disabled>Check In</button>
+    <button id="checkInBtn" onclick="doCheckIn()" disabled><i class="fa fa-check-circle"></i> Check In</button>
   </div>
 
   <!-- PROFILE -->
@@ -85,13 +88,11 @@
     <p class="small"><strong>Active approved deposit daily:</strong> <span id="dailyAmount">0</span> ৳/day</p>
     <p class="small"><strong>Refer bonus given:</strong> <span id="referFlag">No</span></p>
     <p class="small"><strong>Last check-in:</strong> <span id="lastCheckIn">—</span></p>
-
     <hr>
     <h4>Transactions</h4>
     <div id="history">No history yet</div>
-
     <div style="margin-top:10px;">
-      <button onclick="goPage('home')">Back</button>
+      <button onclick="goPage('home')"><i class="fa fa-home"></i> Back</button>
     </div>
   </div>
 
@@ -102,208 +103,141 @@
     <label>Refer link</label>
     <input id="referLink" type="text" readonly value="https://yourapp.com/ref123">
     <div style="margin-top:10px;">
-      <button onclick="copyRef()">Copy Link</button>
+      <button onclick="copyRef()"><i class="fa fa-copy"></i> Copy Link</button>
     </div>
     <div style="margin-top:10px;">
-      <button onclick="goPage('home')">Back</button>
+      <button onclick="goPage('home')"><i class="fa fa-home"></i> Back</button>
     </div>
   </div>
 
   <!-- ADMIN -->
   <div id="admin" class="card" style="display:none;">
     <h3>Admin Panel</h3>
-    <label>Admin Password</label>
-    <input id="adminPass" type="password" placeholder="Enter admin password">
-    <div style="margin-top:10px;">
-      <button onclick="adminLogin()">Login</button>
+    <div class="admin-card">
+      <label>Admin Password</label>
+      <input id="adminPass" type="password" placeholder="Enter admin password">
+      <div style="margin-top:10px;">
+        <button onclick="adminLogin()"><i class="fa fa-key"></i> Login</button>
+      </div>
     </div>
-
     <div id="adminControls" style="display:none; margin-top:12px;">
       <h4>Pending Deposits</h4>
       <div id="pendingDeposits">No pending deposits</div>
-
       <label>Txn ID to Approve</label>
-      <input id="approveTxn" type="text" placeholder="Enter txn id to approve">
-      <div style="margin-top:8px;">
-        <button onclick="approveDeposit()">Approve Deposit</button>
-      </div>
+      <input id="approveTxn" type="text" placeholder="Enter txn id">
+      <div style="margin-top:8px;"><button onclick="approveDeposit()"><i class="fa fa-check"></i> Approve Deposit</button></div>
 
       <hr>
       <h4>Pending Withdraws</h4>
       <div id="pendingWithdraws">No pending withdraws</div>
-
       <label>Withdraw Amount to Approve</label>
-      <input id="approveWithdrawAmt" type="number" placeholder="Enter withdraw amount to approve">
-      <div style="margin-top:8px;">
-        <button onclick="approveWithdraw()">Approve Withdraw</button>
-      </div>
+      <input id="approveWithdrawAmt" type="number" placeholder="Enter withdraw amount">
+      <div style="margin-top:8px;"><button onclick="approveWithdraw()"><i class="fa fa-check"></i> Approve Withdraw</button></div>
 
       <hr>
       <h4>Admin Actions</h4>
-      <button onclick="adminLogout()">Logout</button>
+      <button onclick="adminLogout()"><i class="fa fa-sign-out-alt"></i> Logout</button>
       <p class="muted">Admin password: <strong>Tasnia91223</strong></p>
     </div>
   </div>
 </div>
 
 <nav>
-  <button onclick="goPage('home')">Home</button>
-  <button onclick="goPage('profile')">Profile</button>
-  <button onclick="goPage('refer')">Refer</button>
-  <button onclick="goPage('admin')">Admin</button>
+  <button onclick="goPage('home')"><i class="fa fa-home"></i> Home</button>
+  <button onclick="goPage('profile')"><i class="fa fa-user"></i> Profile</button>
+  <button onclick="goPage('refer')"><i class="fa fa-link"></i> Refer</button>
+  <button onclick="goPage('admin')"><i class="fa fa-shield-alt"></i> Admin</button>
 </nav>
 
 <script>
-/* -------------------------
-   CONFIG / STATE (local)
-   ------------------------- */
+//========================
+// STATE & CONFIG
+//========================
 const ADMIN_PASSWORD = "Tasnia91223";
-const PAYMENT_NUMBER = "01956715958"; // bKash / Nagad number to display
+const PAYMENT_NUMBER = "01956715958";
 
 let state = {
-  balance: 0,
-  approvedDeposit: null,
-  pendingDeposit: null,
-  pendingWithdraw: null,
-  history: [],
-  referBonusGiven: false,
-  lastCheckInDate: null,
-  adminLoggedIn: false
+  balance:0, approvedDeposit:null, pendingDeposit:null, pendingWithdraw:null,
+  history:[], referBonusGiven:false, lastCheckInDate:null, adminLoggedIn:false
 };
 
-/* load/save */
-function loadState(){
-  try {
-    const raw = localStorage.getItem('bullpen_state_v1');
-    if(raw) Object.assign(state, JSON.parse(raw));
-  } catch(e){ console.warn("loadState:", e); }
-}
-function saveState(){
-  try { localStorage.setItem('bullpen_state_v1', JSON.stringify(state)); } catch(e){ console.warn(e); }
-}
+function loadState(){ try { const raw = localStorage.getItem('bullpen_state_v2'); if(raw) Object.assign(state, JSON.parse(raw)); } catch(e){} }
+function saveState(){ try{ localStorage.setItem('bullpen_state_v2', JSON.stringify(state)); } catch(e){} }
+loadState();
 
-function nowMs(){ return Date.now(); }
-function round2(n){ return Math.round(n*100)/100; }
-
-/* UI */
+//========================
+// UI FUNCTIONS
+//========================
 function goPage(page){
   ['home','profile','refer','admin'].forEach(id => document.getElementById(id).style.display = (id===page)?'block':'none');
   renderUI();
 }
+
 function renderUI(){
-  document.getElementById('balance').innerText = round2(state.balance);
+  document.getElementById('balance').innerText = state.balance.toFixed(2);
+  document.getElementById('dailyAmount').innerText = state.approvedDeposit ? state.approvedDeposit.dailyAmount.toFixed(2) : 0;
   document.getElementById('referFlag').innerText = state.referBonusGiven ? 'Yes' : 'No';
   document.getElementById('lastCheckIn').innerText = state.lastCheckInDate || '—';
-  document.getElementById('dailyAmount').innerText = state.approvedDeposit ? round2(state.approvedDeposit.dailyAmount) : 0;
 
-  // show payment number everywhere
   document.getElementById('paymentNumber').innerText = PAYMENT_NUMBER;
   document.getElementById('withdrawPaymentNumber').innerText = PAYMENT_NUMBER;
 
-  // pending deposit/withdraw
-  document.getElementById('pendingDeposits').innerHTML = state.pendingDeposit ? `<div class="pending"><strong>Txn:</strong> ${state.pendingDeposit.txnId} | <strong>Amt:</strong> ${state.pendingDeposit.amount}৳ | <strong>Method:</strong> ${state.pendingDeposit.method}</div>` : '<div class="muted">No pending deposits</div>';
-  document.getElementById('pendingWithdraws').innerHTML = state.pendingWithdraw ? `<div class="pending"><strong>Amt:</strong> ${state.pendingWithdraw.amount}৳ | <span class="small">${new Date(state.pendingWithdraw.submittedAt).toLocaleString()}</span></div>` : '<div class="muted">No pending withdraws</div>';
+  document.getElementById('pendingDeposits').innerHTML = state.pendingDeposit ? `<div class="pending"><i class="fa fa-clock"></i> ${state.pendingDeposit.txnId} | ${state.pendingDeposit.amount}৳ | ${state.pendingDeposit.method}</div>` : '<div class="muted">No pending deposits</div>';
+  document.getElementById('pendingWithdraws').innerHTML = state.pendingWithdraw ? `<div class="pending"><i class="fa fa-clock"></i> ${state.pendingWithdraw.amount}৳</div>` : '<div class="muted">No pending withdraws</div>';
 
-  // history
   if(state.history.length){
-    const rows = state.history.slice().reverse().map(h => `<tr><td>${h.type}</td><td>${h.desc}</td><td>${new Date(h.time).toLocaleString()}</td></tr>`).join('');
+    const rows = state.history.slice().reverse().map(h=>`<tr><td>${h.type}</td><td>${h.desc}</td><td>${new Date(h.time).toLocaleString()}</td></tr>`).join('');
     document.getElementById('history').innerHTML = `<table><thead><tr><th>Type</th><th>Desc</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
   } else document.getElementById('history').innerHTML = '<div class="muted">No history yet</div>';
 
   document.getElementById('checkInBtn').disabled = !state.approvedDeposit;
-  document.getElementById('adminControls').style.display = state.adminLoggedIn ? 'block' : 'none';
+  document.getElementById('adminControls').style.display = state.adminLoggedIn ? 'block':'none';
 }
-loadState(); renderUI();
+renderUI();
 
-/* reconcile approved deposit daily accrual (simple) */
-function reconcile(){
-  if(!state.approvedDeposit) return;
-  const now = nowMs();
-  const msPerDay = 24*60*60*1000;
-  const ap = state.approvedDeposit;
-  const delta = now - (ap.approvedAt || now);
-  if(delta < msPerDay) return;
-  const days = Math.floor(delta / msPerDay);
-  if(days > 0){
-    const total = days * ap.dailyAmount;
-    state.balance = round2(state.balance + total);
-    ap.approvedAt = (ap.approvedAt || now) + days*msPerDay;
-    state.history.push({type:'auto-daily', desc:`${days} day(s) auto-added ${round2(total)}৳ (daily ${round2(ap.dailyAmount)}৳)`, time: now});
-    saveState();
-  }
-}
-reconcile();
-if(state.approvedDeposit){
-  if(window._dailyInterval) clearInterval(window._dailyInterval);
-  window._dailyInterval = setInterval(()=>{ state.balance = round2(state.balance + state.approvedDeposit.dailyAmount); state.approvedDeposit.approvedAt = nowMs(); state.history.push({type:'auto-daily', desc:`auto-added ${round2(state.approvedDeposit.dailyAmount)}৳`, time: nowMs()}); saveState(); renderUI(); }, 24*60*60*1000);
-}
-
-/* User actions */
+//========================
+// USER ACTIONS
+//========================
 function submitDeposit(){
   const amt = Number(document.getElementById('depositAmount').value);
   const method = document.getElementById('depositMethod').value;
   const txn = document.getElementById('depositTxnId').value.trim();
-  if(!amt || !txn){ alert('Amount এবং Transaction ID অবশ্যই দিতে হবে'); return; }
-  state.pendingDeposit = { amount: round2(amt), method, txnId: txn, submittedAt: nowMs() };
-  state.history.push({type:'deposit-pending', desc:`Txn ${txn} amount ${amt}৳ via ${method}`, time: nowMs()});
-  saveState(); renderUI(); alert('Deposit submitted এবং Admin approval প্রয়োজন। (পেমেন্ট নম্বর: ' + PAYMENT_NUMBER + ')');
+  if(!amt || !txn){ alert('Amount এবং Transaction ID দিতে হবে'); return; }
+  state.pendingDeposit = {amount:amt, method, txnId:txn, submittedAt:Date.now()};
+  state.history.push({type:'deposit-pending', desc:`Txn ${txn} amount ${amt}৳ via ${method}`, time:Date.now()});
+  saveState(); renderUI(); alert('Deposit submitted, admin approval প্রয়োজন।');
 }
-
 function submitWithdraw(){
   const amt = Number(document.getElementById('withdrawAmount').value);
-  if(!amt){ alert('Amount দিন'); return; }
-  if(amt > state.balance){ alert('তোমার ব্যালেন্স পর্যাপ্ত নয়'); return; }
-  state.pendingWithdraw = { amount: round2(amt), submittedAt: nowMs() };
-  state.history.push({type:'withdraw-pending', desc:`Withdraw request ${amt}৳`, time: nowMs()});
-  saveState(); renderUI(); alert('Withdraw request submitted, Admin approval প্রয়োজন।');
+  if(!amt || amt>state.balance){ alert('Amount invalid বা balance পর্যাপ্ত নয়'); return; }
+  state.pendingWithdraw={amount:amt, submittedAt:Date.now()};
+  state.history.push({type:'withdraw-pending', desc:`Withdraw request ${amt}৳`, time:Date.now()});
+  saveState(); renderUI(); alert('Withdraw request submitted, admin approval প্রয়োজন।');
 }
-
 function doCheckIn(){
   if(!state.approvedDeposit){ alert('কোনো approved deposit নেই'); return; }
-  const today = new Date().toDateString();
-  if(state.lastCheckInDate === today){ alert('আজকে আগেই Check-in করেছেন'); return; }
-  const bonus = round2(state.approvedDeposit.amount * 0.10);
-  state.balance = round2(state.balance + bonus);
-  state.lastCheckInDate = today;
-  state.history.push({type:'checkin', desc:`Check-in bonus ${bonus}৳`, time: nowMs()});
-  saveState(); renderUI(); alert('Check-in bonus যোগ করা হয়েছে: ' + bonus + '৳');
+  const today=new Date().toDateString();
+  if(state.lastCheckInDate===today){ alert('আজকে আগেই Check-in করেছেন'); return; }
+  const bonus=state.approvedDeposit.amount*0.10;
+  state.balance+=bonus; state.lastCheckInDate=today;
+  state.history.push({type:'checkin', desc:`Check-in bonus ${bonus.toFixed(2)}৳`, time:Date.now()});
+  saveState(); renderUI(); alert('Check-in bonus যোগ হয়েছে: '+bonus.toFixed(2)+'৳');
 }
 
-/* Admin */
-function adminLogin(){
-  const pass = document.getElementById('adminPass').value;
-  if(pass === ADMIN_PASSWORD){ state.adminLoggedIn = true; state.adminLoggedAt = nowMs(); saveState(); renderUI(); alert('Admin logged in'); }
-  else alert('Password ভুল');
-}
-function adminLogout(){ state.adminLoggedIn = false; saveState(); renderUI(); alert('Admin logged out'); }
+//========================
+// ADMIN ACTIONS
+//========================
+function adminLogin(){ const pass=document.getElementById('adminPass').value; if(pass===ADMIN_PASSWORD){state.adminLoggedIn=true; saveState(); renderUI(); alert('Admin logged in');}else alert('Password ভুল');}
+function adminLogout(){ state.adminLoggedIn=false; saveState(); renderUI(); alert('Admin logged out'); }
+function approveDeposit(){ if(!state.adminLoggedIn){alert('Admin login করুন');return;} if(!state.pendingDeposit){alert('No pending deposit'); return;} const id=document.getElementById('approveTxn').value.trim(); if(id!==state.pendingDeposit.txnId){alert('Txn ID মেলেনি'); return;} const p=state.pendingDeposit; const dailyAmount=p.amount*0.40; state.approvedDeposit={amount:p.amount, method:p.method, txnId:p.txnId, approvedAt:Date.now(), dailyAmount}; state.pendingDeposit=null; if(!state.referBonusGiven){ const rb=p.amount*0.10; state.balance+=rb; state.referBonusGiven=true; state.history.push({type:'refer-bonus', desc:`Refer bonus ${rb.toFixed(2)}৳`, time:Date.now()}); } state.history.push({type:'deposit-approved', desc:`Deposit ${state.approvedDeposit.amount}৳ approved (daily ${state.approvedDeposit.dailyAmount.toFixed(2)}৳)`, time:Date.now()}); saveState(); renderUI(); alert('Deposit approved! Daily accrual চালু হয়েছে'); }
+function approveWithdraw(){ if(!state.adminLoggedIn){alert('Admin login করুন');return;} if(!state.pendingWithdraw){alert('No pending withdraw'); return;} const amt=Number(document.getElementById('approveWithdrawAmt').value); if(amt!==state.pendingWithdraw.amount){alert('Amount mismatch');return;} state.balance-=amt; state.history.push({type:'withdraw-approved', desc:`Withdraw ${amt}৳ approved`, time:Date.now()}); state.pendingWithdraw=null; saveState(); renderUI(); alert('Withdraw approved এবং balance কেটে দেওয়া হয়েছে।'); }
 
-function approveDeposit(){
-  if(!state.adminLoggedIn){ alert('Admin login করুন'); return; }
-  if(!state.pendingDeposit){ alert('কোনো pending deposit নেই'); return; }
-  const id = document.getElementById('approveTxn').value.trim();
-  if(id !== state.pendingDeposit.txnId){ alert('Txn ID মেলেনি'); return; }
-
-  const p = state.pendingDeposit;
-  const dailyAmount = round2(p.amount * 0.40); // প্রতিদিন 40% হিসেবে নেওয়া হয়েছে
-  state.approvedDeposit = { amount: p.amount, method: p.method, txnId: p.txnId, approvedAt: nowMs(), dailyAmount };
-  state.pendingDeposit = null;
-
-  if(!state.referBonusGiven){
-    const referBonus = round2(state.approvedDeposit.amount * 0.10);
-    state.balance = round2(state.balance + referBonus);
-    state.referBonusGiven = true;
-    state.history.push({type:'refer-bonus', desc:`Refer bonus ${referBonus}৳`, time: nowMs()});
-  }
-
-  state.history.push({type:'deposit-approved', desc:`Deposit ${state.approvedDeposit.amount}৳ approved (daily ${state.approvedDeposit.dailyAmount}৳)`, time: nowMs()});
-  saveState(); renderUI();
-  // start interval
-  if(window._dailyInterval) clearInterval(window._dailyInterval);
-  window._dailyInterval = setInterval(()=>{ state.balance = round2(state.balance + state.approvedDeposit.dailyAmount); state.approvedDeposit.approvedAt = nowMs(); state.history.push({type:'auto-daily', desc:`auto-added ${round2(state.approvedDeposit.dailyAmount)}৳`, time: nowMs()}); saveState(); renderUI(); }, 24*60*60*1000);
-  alert('Deposit approved। Daily accrual চালু হয়েছে: ' + state.approvedDeposit.dailyAmount + '৳/day');
-}
-
-function approveWithdraw(){
-  if(!state.adminLoggedIn){ alert('Admin login করুন'); return; }
-  if(!state.pendingWithdraw){ alert('No pending withdraw'); return; }
-  const amtInput = Number(document.getElementById
+//========================
+// HELPERS
+//========================
+function copyPaymentNumber(){ navigator.clipboard.writeText(PAYMENT_NUMBER).then(()=>alert('Number copied: '+PAYMENT_NUMBER)); }
+function callPaymentNumber(){ window.location.href='tel:'+PAYMENT_NUMBER; }
+function copyRef(){ const text=document.getElementById('referLink'); text.select(); text.setSelectionRange(0,99999); document.execCommand('copy'); alert('Refer link copied'); }
+</script>
+</body>
+</html>
