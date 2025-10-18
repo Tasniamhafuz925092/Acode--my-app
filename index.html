@@ -1,243 +1,157 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BULLPEN - Stylish Admin Panel</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>BULLPEN</title>
 <style>
-  body { font-family: 'Arial', sans-serif; margin:0; background:#f0f4f8; color:#0f172a; }
-  header { background: linear-gradient(90deg,#2563eb,#3b82f6); color:#fff; padding:16px; text-align:center; font-weight:700; font-size:20px; }
-  .wrap { max-width:840px; margin:20px auto; padding:12px; }
-  .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:16px; box-shadow:0 8px 20px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-  .card:hover { transform: translateY(-5px); box-shadow:0 12px 25px rgba(0,0,0,0.2); }
-  label{display:block; margin:6px 0 4px; font-weight:600;}
-  input[type="number"], input[type="text"], input[type="password"], select {
-    width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db; box-sizing:border-box; transition:0.3s;
-  }
-  input:focus { border-color:#2563eb; outline:none; box-shadow:0 0 5px rgba(37,99,235,0.5); }
-  button { background:#2563eb; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.3s; }
-  button.gray { background:#6b7280; }
-  button:hover { background:#1e40af; }
-  .row { display:flex; flex-wrap:wrap; gap:10px; }
-  .col { flex:1; min-width:200px; }
-  nav { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid #e6eefc; display:flex; }
-  nav button { flex:1; padding:12px; border:none; background:transparent; font-weight:600; cursor:pointer; }
-  nav button:hover { background:#f1f5f9; }
-  .small { font-size:13px; color:#374151; }
-  .muted { color:#6b7280; font-size:13px; }
-  .pending { background:#fff7ed; padding:8px; border-radius:8px; margin-top:8px; }
-  .paybox { display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
-  .paynum { font-weight:700; font-size:16px; background:#f1f5f9; padding:8px 10px; border-radius:8px; }
-  table { width:100%; border-collapse:collapse; }
-  th, td { border:1px solid #d1d5db; padding:6px 8px; text-align:left; }
-  th { background:#f3f4f6; }
-  .admin-card { background: linear-gradient(135deg,#2563eb,#3b82f6); color:white; padding:16px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.15); }
-  @media(max-width:500px){ .row { flex-direction:column; } }
+  body { font-family: Arial, sans-serif; text-align: center; background: #e3f2fd; margin:0; padding:0;}
+  h1 { margin-top: 20px; color:#2196f3; }
+  .container { max-width: 500px; margin: 20px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+  button { padding:12px 25px; margin:8px; border:none; border-radius:8px; cursor:pointer; background:#2196f3; color:#fff; font-size:16px;}
+  button:hover { background:#1976d2;}
+  input, select { padding:12px; margin:8px; width:90%; border-radius:8px; border:1px solid #ccc; font-size:16px;}
+  .balance { font-size:22px; margin:15px 0; font-weight:bold;}
+  .hidden { display:none; }
 </style>
 </head>
 <body>
-<header>BULLPEN - Stylish Admin Panel</header>
-<div class="wrap">
-  <!-- HOME -->
-  <div id="home" class="card">
+
+<h1>BULLPEN</h1>
+<div class="container">
+  <div class="balance">Balance: <span id="balance">0</span> Taka</div>
+  
+  <button onclick="showDeposit()">Deposit</button>
+  <button onclick="showWithdraw()">Withdraw</button>
+  <button onclick="showCheckin()">Check-in</button>
+  <button onclick="showRefer()">Refer</button>
+
+  <!-- Deposit Section -->
+  <div id="depositDiv" class="hidden">
     <h3>Deposit</h3>
-    <label>Amount (৳)</label>
-    <input id="depositAmount" type="number" placeholder="Enter amount (e.g. 100)">
-    <label>Method</label>
-    <select id="depositMethod">
+    <input type="number" id="depositAmount" placeholder="Amount (100-1000 Taka)" min="100" max="1000"><br>
+    <select id="paymentMethod">
+      <option value="">Select Payment Method</option>
       <option value="bkash">bKash</option>
       <option value="nagad">Nagad</option>
-    </select>
-    <label>Transaction ID (Txn ID)</label>
-    <input id="depositTxnId" type="text" placeholder="Enter Transaction ID">
-    <div class="paybox">
-      <div class="paynum" id="paymentNumber">01956715958</div>
-      <button onclick="copyPaymentNumber()"><i class="fa fa-copy"></i> Copy</button>
-      <button onclick="callPaymentNumber()"><i class="fa fa-phone"></i> Call</button>
+    </select><br>
+    <button onclick="goToTelegram()">Proceed to Telegram</button>
+    <div id="txnDiv" class="hidden">
+      <input type="text" id="txnId" placeholder="Enter Transaction ID"><br>
+      <button onclick="confirmDeposit()">Confirm Deposit</button>
     </div>
-    <div style="margin-top:10px;">
-      <button onclick="submitDeposit()"><i class="fa fa-upload"></i> Submit Deposit</button>
-      <button class="gray" onclick="goPage('profile')"><i class="fa fa-user"></i> My Profile</button>
-    </div>
+  </div>
 
-    <hr style="margin:12px 0;">
+  <!-- Withdraw Section -->
+  <div id="withdrawDiv" class="hidden">
     <h3>Withdraw</h3>
-    <label>Amount (৳)</label>
-    <input id="withdrawAmount" type="number" placeholder="Enter withdraw amount">
-    <div class="paybox">
-      <div class="muted small">Withdraw to:</div>
-      <div class="paynum" id="withdrawPaymentNumber">01956715958</div>
-      <button onclick="copyPaymentNumber()"><i class="fa fa-copy"></i> Copy</button>
-      <button onclick="callPaymentNumber()"><i class="fa fa-phone"></i> Call</button>
-    </div>
-    <div style="margin-top:10px;">
-      <button onclick="submitWithdraw()"><i class="fa fa-download"></i> Request Withdraw</button>
-    </div>
-
-    <hr style="margin:12px 0;">
-    <h3>Daily Check-in</h3>
-    <p class="muted">Deposit approved হলে প্রতিদিন একবার Check-in করে deposit-এর 10% পাওয়া যাবে।</p>
-    <button id="checkInBtn" onclick="doCheckIn()" disabled><i class="fa fa-check-circle"></i> Check In</button>
+    <input type="number" id="withdrawAmount" placeholder="Amount (Taka)"><br>
+    <select id="withdrawMethod">
+      <option value="">Select Method</option>
+      <option value="bkash">bKash</option>
+      <option value="nagad">Nagad</option>
+    </select><br>
+    <button onclick="confirmWithdraw()">Withdraw</button>
   </div>
 
-  <!-- PROFILE -->
-  <div id="profile" class="card" style="display:none;">
-    <h3>My Profile</h3>
-    <p><strong>Balance:</strong> <span id="balance">0</span> ৳</p>
-    <p class="small"><strong>Active approved deposit daily:</strong> <span id="dailyAmount">0</span> ৳/day</p>
-    <p class="small"><strong>Refer bonus given:</strong> <span id="referFlag">No</span></p>
-    <p class="small"><strong>Last check-in:</strong> <span id="lastCheckIn">—</span></p>
-    <hr>
-    <h4>Transactions</h4>
-    <div id="history">No history yet</div>
-    <div style="margin-top:10px;">
-      <button onclick="goPage('home')"><i class="fa fa-home"></i> Back</button>
-    </div>
+  <!-- Check-in Section -->
+  <div id="checkinDiv" class="hidden">
+    <h3>Check-in</h3>
+    <button onclick="dailyCheckin()">Check-in for 10% Bonus</button>
   </div>
 
-  <!-- REFER -->
-  <div id="refer" class="card" style="display:none;">
+  <!-- Refer Section -->
+  <div id="referDiv" class="hidden">
     <h3>Refer & Earn</h3>
-    <p class="muted">Refer করলে referee-এর প্রথম successful deposit হলে তোমার বেলারেন্সে একবার 10% যাবে।</p>
-    <label>Refer link</label>
-    <input id="referLink" type="text" readonly value="https://yourapp.com/ref123">
-    <div style="margin-top:10px;">
-      <button onclick="copyRef()"><i class="fa fa-copy"></i> Copy Link</button>
-    </div>
-    <div style="margin-top:10px;">
-      <button onclick="goPage('home')"><i class="fa fa-home"></i> Back</button>
-    </div>
-  </div>
-
-  <!-- ADMIN -->
-  <div id="admin" class="card" style="display:none;">
-    <h3>Admin Panel</h3>
-    <div class="admin-card">
-      <label>Admin Password</label>
-      <input id="adminPass" type="password" placeholder="Enter admin password">
-      <div style="margin-top:10px;">
-        <button onclick="adminLogin()"><i class="fa fa-key"></i> Login</button>
-      </div>
-    </div>
-    <div id="adminControls" style="display:none; margin-top:12px;">
-      <h4>Pending Deposits</h4>
-      <div id="pendingDeposits">No pending deposits</div>
-      <label>Txn ID to Approve</label>
-      <input id="approveTxn" type="text" placeholder="Enter txn id">
-      <div style="margin-top:8px;"><button onclick="approveDeposit()"><i class="fa fa-check"></i> Approve Deposit</button></div>
-
-      <hr>
-      <h4>Pending Withdraws</h4>
-      <div id="pendingWithdraws">No pending withdraws</div>
-      <label>Withdraw Amount to Approve</label>
-      <input id="approveWithdrawAmt" type="number" placeholder="Enter withdraw amount">
-      <div style="margin-top:8px;"><button onclick="approveWithdraw()"><i class="fa fa-check"></i> Approve Withdraw</button></div>
-
-      <hr>
-      <h4>Admin Actions</h4>
-      <button onclick="adminLogout()"><i class="fa fa-sign-out-alt"></i> Logout</button>
-      <p class="muted">Admin password: <strong>Tasnia91223</strong></p>
-    </div>
+    <input type="text" id="refLink" readonly value="https://yourwebsite.com/?ref=USER123"><br>
+    <button onclick="copyRefer()">Copy Referral Link</button>
   </div>
 </div>
 
-<nav>
-  <button onclick="goPage('home')"><i class="fa fa-home"></i> Home</button>
-  <button onclick="goPage('profile')"><i class="fa fa-user"></i> Profile</button>
-  <button onclick="goPage('refer')"><i class="fa fa-link"></i> Refer</button>
-  <button onclick="goPage('admin')"><i class="fa fa-shield-alt"></i> Admin</button>
-</nav>
-
 <script>
-//========================
-// STATE & CONFIG
-//========================
-const ADMIN_PASSWORD = "Tasnia91223";
-const PAYMENT_NUMBER = "01956715958";
+let balance = 0;
+let depositMadeToday = false;
+let lastCheckinDate = null;
 
-let state = {
-  balance:0, approvedDeposit:null, pendingDeposit:null, pendingWithdraw:null,
-  history:[], referBonusGiven:false, lastCheckInDate:null, adminLoggedIn:false
-};
-
-function loadState(){ try { const raw = localStorage.getItem('bullpen_state_v2'); if(raw) Object.assign(state, JSON.parse(raw)); } catch(e){} }
-function saveState(){ try{ localStorage.setItem('bullpen_state_v2', JSON.stringify(state)); } catch(e){} }
-loadState();
-
-//========================
-// UI FUNCTIONS
-//========================
-function goPage(page){
-  ['home','profile','refer','admin'].forEach(id => document.getElementById(id).style.display = (id===page)?'block':'none');
-  renderUI();
+// Show/Hide Sections
+function showDeposit(){ hideAll(); document.getElementById('depositDiv').classList.remove('hidden'); }
+function showWithdraw(){ hideAll(); document.getElementById('withdrawDiv').classList.remove('hidden'); }
+function showCheckin(){ hideAll(); document.getElementById('checkinDiv').classList.remove('hidden'); }
+function showRefer(){ hideAll(); document.getElementById('referDiv').classList.remove('hidden'); }
+function hideAll(){
+  document.getElementById('depositDiv').classList.add('hidden');
+  document.getElementById('withdrawDiv').classList.add('hidden');
+  document.getElementById('checkinDiv').classList.add('hidden');
+  document.getElementById('referDiv').classList.add('hidden');
 }
 
-function renderUI(){
-  document.getElementById('balance').innerText = state.balance.toFixed(2);
-  document.getElementById('dailyAmount').innerText = state.approvedDeposit ? state.approvedDeposit.dailyAmount.toFixed(2) : 0;
-  document.getElementById('referFlag').innerText = state.referBonusGiven ? 'Yes' : 'No';
-  document.getElementById('lastCheckIn').innerText = state.lastCheckInDate || '—';
-
-  document.getElementById('paymentNumber').innerText = PAYMENT_NUMBER;
-  document.getElementById('withdrawPaymentNumber').innerText = PAYMENT_NUMBER;
-
-  document.getElementById('pendingDeposits').innerHTML = state.pendingDeposit ? `<div class="pending"><i class="fa fa-clock"></i> ${state.pendingDeposit.txnId} | ${state.pendingDeposit.amount}৳ | ${state.pendingDeposit.method}</div>` : '<div class="muted">No pending deposits</div>';
-  document.getElementById('pendingWithdraws').innerHTML = state.pendingWithdraw ? `<div class="pending"><i class="fa fa-clock"></i> ${state.pendingWithdraw.amount}৳</div>` : '<div class="muted">No pending withdraws</div>';
-
-  if(state.history.length){
-    const rows = state.history.slice().reverse().map(h=>`<tr><td>${h.type}</td><td>${h.desc}</td><td>${new Date(h.time).toLocaleString()}</td></tr>`).join('');
-    document.getElementById('history').innerHTML = `<table><thead><tr><th>Type</th><th>Desc</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-  } else document.getElementById('history').innerHTML = '<div class="muted">No history yet</div>';
-
-  document.getElementById('checkInBtn').disabled = !state.approvedDeposit;
-  document.getElementById('adminControls').style.display = state.adminLoggedIn ? 'block':'none';
-}
-renderUI();
-
-//========================
-// USER ACTIONS
-//========================
-function submitDeposit(){
-  const amt = Number(document.getElementById('depositAmount').value);
-  const method = document.getElementById('depositMethod').value;
-  const txn = document.getElementById('depositTxnId').value.trim();
-  if(!amt || !txn){ alert('Amount এবং Transaction ID দিতে হবে'); return; }
-  state.pendingDeposit = {amount:amt, method, txnId:txn, submittedAt:Date.now()};
-  state.history.push({type:'deposit-pending', desc:`Txn ${txn} amount ${amt}৳ via ${method}`, time:Date.now()});
-  saveState(); renderUI(); alert('Deposit submitted, admin approval প্রয়োজন।');
-}
-function submitWithdraw(){
-  const amt = Number(document.getElementById('withdrawAmount').value);
-  if(!amt || amt>state.balance){ alert('Amount invalid বা balance পর্যাপ্ত নয়'); return; }
-  state.pendingWithdraw={amount:amt, submittedAt:Date.now()};
-  state.history.push({type:'withdraw-pending', desc:`Withdraw request ${amt}৳`, time:Date.now()});
-  saveState(); renderUI(); alert('Withdraw request submitted, admin approval প্রয়োজন।');
-}
-function doCheckIn(){
-  if(!state.approvedDeposit){ alert('কোনো approved deposit নেই'); return; }
-  const today=new Date().toDateString();
-  if(state.lastCheckInDate===today){ alert('আজকে আগেই Check-in করেছেন'); return; }
-  const bonus=state.approvedDeposit.amount*0.10;
-  state.balance+=bonus; state.lastCheckInDate=today;
-  state.history.push({type:'checkin', desc:`Check-in bonus ${bonus.toFixed(2)}৳`, time:Date.now()});
-  saveState(); renderUI(); alert('Check-in bonus যোগ হয়েছে: '+bonus.toFixed(2)+'৳');
+// Deposit Flow
+function goToTelegram(){
+  const amount = document.getElementById('depositAmount').value;
+  const method = document.getElementById('paymentMethod').value;
+  if(amount < 100 || amount > 1000){ alert('Amount must be 100-1000 Taka'); return; }
+  if(!method){ alert('Select a payment method'); return; }
+  
+  alert(`You will be redirected to Telegram to pay via ${method}`);
+  window.open('https://t.me/Bullpenpofficial', '_blank'); // Telegram bot link
+  
+  document.getElementById('txnDiv').classList.remove('hidden');
 }
 
-//========================
-// ADMIN ACTIONS
-//========================
-function adminLogin(){ const pass=document.getElementById('adminPass').value; if(pass===ADMIN_PASSWORD){state.adminLoggedIn=true; saveState(); renderUI(); alert('Admin logged in');}else alert('Password ভুল');}
-function adminLogout(){ state.adminLoggedIn=false; saveState(); renderUI(); alert('Admin logged out'); }
-function approveDeposit(){ if(!state.adminLoggedIn){alert('Admin login করুন');return;} if(!state.pendingDeposit){alert('No pending deposit'); return;} const id=document.getElementById('approveTxn').value.trim(); if(id!==state.pendingDeposit.txnId){alert('Txn ID মেলেনি'); return;} const p=state.pendingDeposit; const dailyAmount=p.amount*0.40; state.approvedDeposit={amount:p.amount, method:p.method, txnId:p.txnId, approvedAt:Date.now(), dailyAmount}; state.pendingDeposit=null; if(!state.referBonusGiven){ const rb=p.amount*0.10; state.balance+=rb; state.referBonusGiven=true; state.history.push({type:'refer-bonus', desc:`Refer bonus ${rb.toFixed(2)}৳`, time:Date.now()}); } state.history.push({type:'deposit-approved', desc:`Deposit ${state.approvedDeposit.amount}৳ approved (daily ${state.approvedDeposit.dailyAmount.toFixed(2)}৳)`, time:Date.now()}); saveState(); renderUI(); alert('Deposit approved! Daily accrual চালু হয়েছে'); }
-function approveWithdraw(){ if(!state.adminLoggedIn){alert('Admin login করুন');return;} if(!state.pendingWithdraw){alert('No pending withdraw'); return;} const amt=Number(document.getElementById('approveWithdrawAmt').value); if(amt!==state.pendingWithdraw.amount){alert('Amount mismatch');return;} state.balance-=amt; state.history.push({type:'withdraw-approved', desc:`Withdraw ${amt}৳ approved`, time:Date.now()}); state.pendingWithdraw=null; saveState(); renderUI(); alert('Withdraw approved এবং balance কেটে দেওয়া হয়েছে।'); }
+function confirmDeposit(){
+  const txnId = document.getElementById('txnId').value.trim();
+  const amount = parseFloat(document.getElementById('depositAmount').value);
+  if(!txnId){ alert('Enter Transaction ID'); return; }
+  
+  // Admin manually confirms here. For demo, auto confirm
+  const confirmed = true;
+  if(confirmed){
+    const bonus = amount * 0.4; // 40% bonus
+    balance += amount + bonus;
+    document.getElementById('balance').innerText = balance.toFixed(2);
+    alert(`Deposit Successful! Amount + 40% Bonus added. Total: ${balance.toFixed(2)} Taka`);
+    depositMadeToday = true;
+    
+    // Reset fields
+    document.getElementById('depositAmount').value = '';
+    document.getElementById('paymentMethod').value = '';
+    document.getElementById('txnId').value = '';
+    document.getElementById('txnDiv').classList.add('hidden');
+  }
+}
 
-//========================
-// HELPERS
-//========================
-function copyPaymentNumber(){ navigator.clipboard.writeText(PAYMENT_NUMBER).then(()=>alert('Number copied: '+PAYMENT_NUMBER)); }
-function callPaymentNumber(){ window.location.href='tel:'+PAYMENT_NUMBER; }
-function copyRef(){ const text=document.getElementById('referLink'); text.select(); text.setSelectionRange(0,99999); document.execCommand('copy'); alert('Refer link copied'); }
+// Withdraw
+function confirmWithdraw(){
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  if(amount > balance){ alert('Insufficient balance'); return; }
+  const method = document.getElementById('withdrawMethod').value;
+  if(!method){ alert('Select method'); return; }
+  balance -= amount;
+  document.getElementById('balance').innerText = balance.toFixed(2);
+  alert(`Withdrawn ${amount} Taka via ${method}`);
+}
+
+// Check-in Bonus
+function dailyCheckin(){
+  const today = new Date().toDateString();
+  if(lastCheckinDate === today){ alert('Already checked in today'); return; }
+  if(!depositMadeToday){ alert('You need to deposit first today to check-in'); return; }
+  const checkinBonus = balance * 0.1; // 10% of current balance
+  balance += checkinBonus;
+  document.getElementById('balance').innerText = balance.toFixed(2);
+  lastCheckinDate = today;
+  alert(`Check-in Successful! 10% Bonus added: ${checkinBonus.toFixed(2)} Taka`);
+}
+
+// Refer System
+function copyRefer(){
+  const refLink = document.getElementById('refLink');
+  refLink.select();
+  refLink.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(refLink.value);
+  alert('Referral link copied!');
+}
 </script>
+
 </body>
 </html>
