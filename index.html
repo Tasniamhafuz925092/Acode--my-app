@@ -1,157 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BULLPEN</title>
+<title>Modern Responsive Full System</title>
 <style>
-  body { font-family: Arial, sans-serif; text-align: center; background: #e3f2fd; margin:0; padding:0;}
-  h1 { margin-top: 20px; color:#2196f3; }
-  .container { max-width: 500px; margin: 20px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
-  button { padding:12px 25px; margin:8px; border:none; border-radius:8px; cursor:pointer; background:#2196f3; color:#fff; font-size:16px;}
-  button:hover { background:#1976d2;}
-  input, select { padding:12px; margin:8px; width:90%; border-radius:8px; border:1px solid #ccc; font-size:16px;}
-  .balance { font-size:22px; margin:15px 0; font-weight:bold;}
-  .hidden { display:none; }
+body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin:0; padding:0; }
+header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
+.container { padding: 15px; max-width: 1000px; margin: auto; }
+.section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
+h3 { margin-top: 0; }
+button { padding: 10px 20px; margin: 5px 0; cursor: pointer; border: none; border-radius: 8px; transition: 0.3s; font-weight: bold; }
+button:hover { opacity: 0.85; }
+.btn-primary { background: #43a047; color: white; }
+.btn-secondary { background: #1e88e5; color: white; }
+.btn-admin { background: #e53935; color: white; }
+input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 400px; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th { background-color: #f2f2f2; }
+.progress-bar { width: 100%; background: #eee; border-radius: 10px; overflow: hidden; height: 15px; margin-bottom: 10px; }
+.progress { height: 100%; width: 0%; background: #43a047; transition: width 0.5s; }
+.label { font-weight: bold; margin-bottom: 5px; display:block; }
+.tooltip { position: relative; cursor: pointer; color: #1e88e5; }
+.tooltip:hover::after { content: attr(data-tip); position: absolute; left: 0; top: 25px; background: #333; color: white; padding: 5px 8px; border-radius: 5px; font-size: 12px; white-space: nowrap; }
+@media screen and (max-width: 600px){
+  header { font-size: 18px; }
+  button { width: 100%; }
+  input, select { font-size: 16px; }
+}
+.balance-green { color: #43a047; font-weight:bold; }
+.bonus-blue { color: #1e88e5; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<h1>BULLPEN</h1>
+<header>Modern Responsive Full System</header>
 <div class="container">
-  <div class="balance">Balance: <span id="balance">0</span> Taka</div>
-  
-  <button onclick="showDeposit()">Deposit</button>
-  <button onclick="showWithdraw()">Withdraw</button>
-  <button onclick="showCheckin()">Check-in</button>
-  <button onclick="showRefer()">Refer</button>
 
-  <!-- Deposit Section -->
-  <div id="depositDiv" class="hidden">
-    <h3>Deposit</h3>
-    <input type="number" id="depositAmount" placeholder="Amount (100-1000 Taka)" min="100" max="1000"><br>
-    <select id="paymentMethod">
-      <option value="">Select Payment Method</option>
-      <option value="bkash">bKash</option>
-      <option value="nagad">Nagad</option>
-    </select><br>
-    <button onclick="goToTelegram()">Proceed to Telegram</button>
-    <div id="txnDiv" class="hidden">
-      <input type="text" id="txnId" placeholder="Enter Transaction ID"><br>
-      <button onclick="confirmDeposit()">Confirm Deposit</button>
-    </div>
-  </div>
+<!-- User Balance -->
+<div class="section">
+<h3>Your Balance: <span id="balance" class="balance-green">0</span> Taka</h3>
+<p>Daily Income: <span class="bonus-blue">40</span> Taka</p>
+<div class="progress-bar">
+<div id="dailyProgress" class="progress"></div>
+</div>
+<button class="btn-primary" onclick="claimDailyIncome()">Claim Daily Income</button>
+</div>
 
-  <!-- Withdraw Section -->
-  <div id="withdrawDiv" class="hidden">
-    <h3>Withdraw</h3>
-    <input type="number" id="withdrawAmount" placeholder="Amount (Taka)"><br>
-    <select id="withdrawMethod">
-      <option value="">Select Method</option>
-      <option value="bkash">bKash</option>
-      <option value="nagad">Nagad</option>
-    </select><br>
-    <button onclick="confirmWithdraw()">Withdraw</button>
-  </div>
+<!-- Deposit -->
+<div class="section">
+<h3>Deposit Money <span class="tooltip" data-tip="Deposit between 100-1000 Taka via selected method.">?</span></h3>
+<label>Amount (100-1000 Taka):</label>
+<input type="number" id="depositAmount" min="100" max="1000" value="100">
+<label>Payment Method:</label>
+<select id="depositMethod">
+<option value="bkash">bKash</option>
+<option value="nagad">Nagad</option>
+</select>
+<div class="progress-bar">
+<div id="depositProgress" class="progress"></div>
+</div>
+<button class="btn-secondary" onclick="sendDeposit()">Send Money</button>
+</div>
 
-  <!-- Check-in Section -->
-  <div id="checkinDiv" class="hidden">
-    <h3>Check-in</h3>
-    <button onclick="dailyCheckin()">Check-in for 10% Bonus</button>
-  </div>
+<!-- Check-in -->
+<div class="section">
+<h3>Check-in Bonus <span class="tooltip" data-tip="Get 10% bonus of your current balance once per day.">?</span></h3>
+<div class="progress-bar">
+<div id="checkinProgress" class="progress"></div>
+</div>
+<button class="btn-primary" onclick="claimCheckinBonus()">Claim 10% Bonus</button>
+<p id="checkinMsg"></p>
+</div>
 
-  <!-- Refer Section -->
-  <div id="referDiv" class="hidden">
-    <h3>Refer & Earn</h3>
-    <input type="text" id="refLink" readonly value="https://yourwebsite.com/?ref=USER123"><br>
-    <button onclick="copyRefer()">Copy Referral Link</button>
-  </div>
+<!-- Referral -->
+<div class="section">
+<h3>Referral <span class="tooltip" data-tip="Share your link and earn 20% bonus on first deposit of your referral.">?</span></h3>
+<input type="text" id="refLink" readonly>
+<button class="btn-secondary" onclick="copyRef()">Copy Referral Link</button>
+<p>Your total referral bonus: <span id="refBonus" class="bonus-blue">0</span> Taka</p>
+<p>Total referred users: <span id="refCount">0</span></p>
+</div>
+
+<!-- Transaction History -->
+<div class="section table-container">
+<h3>Your Transaction History</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody id="userTxTable"></tbody>
+</table>
+</div>
+
+<!-- Admin Section -->
+<div class="section">
+<h3>Admin: Add / Mark Transaction</h3>
+<input type="text" id="adminRefCode" placeholder="User Ref Code">
+<input type="number" id="adminAmount" placeholder="Amount to Add">
+<button class="btn-admin" onclick="addBalance()">Add Balance</button>
+</div>
+
+<div class="section table-container">
+<h3>All Users</h3>
+<table>
+<thead>
+<tr>
+<th>Ref Code</th>
+<th>Balance</th>
+<th>Referral Bonus</th>
+<th>Referrals</th>
+</tr>
+</thead>
+<tbody id="userTable"></tbody>
+</table>
+</div>
+
+<div class="section table-container">
+<h3>All Transactions (Admin View)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>User</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody id="adminTxTable"></tbody>
+</table>
+</div>
+
 </div>
 
 <script>
-let balance = 0;
-let depositMadeToday = false;
-let lastCheckinDate = null;
+// DB & Transactions
+let usersDB = {}; 
+let transactions = []; 
+let userTransactions = []; 
 
-// Show/Hide Sections
-function showDeposit(){ hideAll(); document.getElementById('depositDiv').classList.remove('hidden'); }
-function showWithdraw(){ hideAll(); document.getElementById('withdrawDiv').classList.remove('hidden'); }
-function showCheckin(){ hideAll(); document.getElementById('checkinDiv').classList.remove('hidden'); }
-function showRefer(){ hideAll(); document.getElementById('referDiv').classList.remove('hidden'); }
-function hideAll(){
-  document.getElementById('depositDiv').classList.add('hidden');
-  document.getElementById('withdrawDiv').classList.add('hidden');
-  document.getElementById('checkinDiv').classList.add('hidden');
-  document.getElementById('referDiv').classList.add('hidden');
+// Current User
+let user = {
+balance: 0,
+dailyClaimed: false,
+lastCheckin: null,
+refCode: Math.random().toString(36).substring(2,8),
+referredBy: null,
+firstDepositDone: false,
+refBonus: 0,
+referrals: 0
+};
+
+// Referral from URL
+const urlParams = new URLSearchParams(window.location.search);
+const ref = urlParams.get('ref');
+if(ref && ref !== user.refCode){
+user.referredBy = ref;
+if(!usersDB[ref]) usersDB[ref] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
 }
 
-// Deposit Flow
-function goToTelegram(){
-  const amount = document.getElementById('depositAmount').value;
-  const method = document.getElementById('paymentMethod').value;
-  if(amount < 100 || amount > 1000){ alert('Amount must be 100-1000 Taka'); return; }
-  if(!method){ alert('Select a payment method'); return; }
-  
-  alert(`You will be redirected to Telegram to pay via ${method}`);
-  window.open('https://t.me/Bullpenpofficial', '_blank'); // Telegram bot link
-  
-  document.getElementById('txnDiv').classList.remove('hidden');
+usersDB[user.refCode] = { balance:user.balance, refBonus:user.refBonus, referrals:user.referrals, firstDepositDone:false };
+document.getElementById('refLink').value = window.location.href.split("?")[0] + "?ref=" + user.refCode;
+
+// Update functions
+function updateBalance(){
+document.getElementById('balance').innerText = user.balance.toFixed(2);
+document.getElementById('refBonus').innerText = user.refBonus.toFixed(2);
+document.getElementById('refCount').innerText = user.referrals;
+updateUserTable();
+updateUserTxTable();
+updateAdminTxTable();
+updateProgressBars();
 }
 
-function confirmDeposit(){
-  const txnId = document.getElementById('txnId').value.trim();
-  const amount = parseFloat(document.getElementById('depositAmount').value);
-  if(!txnId){ alert('Enter Transaction ID'); return; }
-  
-  // Admin manually confirms here. For demo, auto confirm
-  const confirmed = true;
-  if(confirmed){
-    const bonus = amount * 0.4; // 40% bonus
-    balance += amount + bonus;
-    document.getElementById('balance').innerText = balance.toFixed(2);
-    alert(`Deposit Successful! Amount + 40% Bonus added. Total: ${balance.toFixed(2)} Taka`);
-    depositMadeToday = true;
-    
-    // Reset fields
-    document.getElementById('depositAmount').value = '';
-    document.getElementById('paymentMethod').value = '';
-    document.getElementById('txnId').value = '';
-    document.getElementById('txnDiv').classList.add('hidden');
-  }
+function updateUserTable(){
+const tbody = document.getElementById('userTable');
+tbody.innerHTML = '';
+for(let code in usersDB){
+const u = usersDB[code];
+const tr = document.createElement('tr');
+tr.innerHTML = `<td>${code}</td><td>${u.balance.toFixed(2)}</td><td>${u.refBonus.toFixed(2)}</td><td>${u.referrals}</td>`;
+tbody.appendChild(tr);
+}
 }
 
-// Withdraw
-function confirmWithdraw(){
-  const amount = parseFloat(document.getElementById('withdrawAmount').value);
-  if(amount > balance){ alert('Insufficient balance'); return; }
-  const method = document.getElementById('withdrawMethod').value;
-  if(!method){ alert('Select method'); return; }
-  balance -= amount;
-  document.getElementById('balance').innerText = balance.toFixed(2);
-  alert(`Withdrawn ${amount} Taka via ${method}`);
+function addTransaction(userCode, type, amount, detail){
+let time = new Date().toLocaleString();
+transactions.push({time,userCode,type,amount,detail});
+if(userCode === user.refCode) userTransactions.push({time,type,amount,detail});
+updateBalance();
 }
 
-// Check-in Bonus
-function dailyCheckin(){
-  const today = new Date().toDateString();
-  if(lastCheckinDate === today){ alert('Already checked in today'); return; }
-  if(!depositMadeToday){ alert('You need to deposit first today to check-in'); return; }
-  const checkinBonus = balance * 0.1; // 10% of current balance
-  balance += checkinBonus;
-  document.getElementById('balance').innerText = balance.toFixed(2);
-  lastCheckinDate = today;
-  alert(`Check-in Successful! 10% Bonus added: ${checkinBonus.toFixed(2)} Taka`);
+function updateUserTxTable(){
+const tbody = document.getElementById('userTxTable');
+tbody.innerHTML = '';
+for(let tx of userTransactions){
+const tr = document.createElement('tr');
+tr.innerHTML = `<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
+tbody.appendChild(tr);
+}
 }
 
-// Refer System
-function copyRefer(){
-  const refLink = document.getElementById('refLink');
-  refLink.select();
-  refLink.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(refLink.value);
-  alert('Referral link copied!');
+function updateAdminTxTable(){
+const tbody = document.getElementById('adminTxTable');
+tbody.innerHTML = '';
+for(let tx of transactions){
+const tr = document.createElement('tr');
+tr.innerHTML = `<td>${tx.time}</td><td>${tx.userCode}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
+tbody.appendChild(tr);
 }
+}
+
+function updateProgressBars(){
+document.getElementById('dailyProgress').style.width = user.dailyClaimed ? '100%' : '0%';
+document.getElementById('checkinProgress').style.width = user.lastCheckin===new Date().toDateString() ? '100%' : '0%';
+document.getElementById('depositProgress').style.width = user.firstDepositDone ? '100%' : '0%';
+}
+
+// User Actions
+function claimDailyIncome(){
+if(user.dailyClaimed){ alert("Daily income already claimed!"); return; }
+user.balance += 40;
+user.dailyClaimed = true;
+usersDB[user.refCode].balance = user.balance;
+addTransaction(user.refCode,'Daily Income',40,'Claimed daily income');
+alert("40 Taka added as daily income!");
+}
+
+function sendDeposit(){
+let amount = parseFloat(document.getElementById('depositAmount').value);
+let method = document.getElementById('depositMethod').value;
+if(amount<100||amount>1000){ alert("Amount must be 100-1000"); return; }
+
+window.open(`https://t.me/YourTelegramBot?start=${encodeURIComponent("Send "+amount+" via "+method+" to 01956715958")}`,"_blank");
+user.balance += amount;
+addTransaction(user.refCode,'Deposit',amount,method);
+
+if(user.firstDepositDone===false && user.referredBy){
+let bonus = amount*0.2;
+usersDB[user.referredBy].refBonus += bonus;
+usersDB[user.referredBy].referrals +=1;
+addTransaction(user.referredBy,'Referral Bonus',bonus,'From '+user.refCode);
+user.firstDepositDone=true;
+}
+usersDB[user.refCode].balance = user.balance;
+updateBalance();
+}
+
+function claimCheckinBonus(){
+let today = new Date().toDateString();
+if(user.lastCheckin===today){ alert("Already claimed today!"); return; }
+if(user.balance>0){
+let bonus = user.balance*0.10;
+user.balance+=bonus;
+usersDB[user.refCode].balance = user.balance;
+addTransaction(user.refCode,'Check-in Bonus',bonus,'10% of balance');
+user.lastCheckin=today;
+alert(`10% check-in bonus claimed: ${bonus.toFixed(2)} Taka`);
+} else { alert("Make deposit first"); }
+}
+
+function copyRef(){
+let refInput = document.getElementById('refLink');
+refInput.select();
+refInput.setSelectionRange(0,99999);
+document.execCommand("copy");
+alert("Referral link copied!");
+}
+
+// Admin add balance
+function addBalance(){
+let ref = document.getElementById('adminRefCode').value.trim();
+let amount = parseFloat(document.getElementById('adminAmount').value);
+if(!ref||isNaN(amount)||amount<=0){ alert("Enter valid ref code and amount"); return; }
+if(!usersDB[ref]) usersDB[ref] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
+usersDB[ref].balance += amount;
+addTransaction(ref,'Admin Added',amount,'Admin credited balance');
+alert(`Added ${amount.toFixed(2)} Taka to ${ref}`);
+document.getElementById('adminRefCode').value='';
+document.getElementById('adminAmount').value='';
+updateBalance();
+}
+
+updateBalance();
 </script>
 
 </body>
 </html>
+``
