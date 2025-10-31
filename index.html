@@ -3,67 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verified System - Responsive</title>
+<title>Verified System</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin:0; padding:0; }
-header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-.container { padding: 15px; max-width: 1000px; margin: auto; }
-.section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
-h3 { margin-top: 0; }
-button { padding: 10px 20px; margin: 5px 0; cursor: pointer; border: none; border-radius: 8px; transition: 0.3s; font-weight: bold; }
-button:hover { opacity: 0.85; }
+header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; }
+.container { padding: 15px; max-width: 800px; margin: auto; }
+.section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+button { padding: 10px 20px; margin: 5px 0; cursor: pointer; border: none; border-radius: 8px; font-weight:bold; }
 .btn-primary { background: #43a047; color: white; }
-.btn-secondary { background: #1e88e5; color: white; }
-.btn-admin { background: #e53935; color: white; }
-input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size:16px; }
+.btn-admin { background: #e53935; color:white; }
+input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius:6px; border:1px solid #ccc; box-sizing:border-box; font-size:16px; }
 .table-container { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 400px; }
-th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th, td { border:1px solid #ccc; padding:8px; text-align:center; }
 th { background-color: #f2f2f2; }
 .progress-bar { width: 100%; background: #eee; border-radius: 10px; overflow: hidden; height: 15px; margin-bottom: 10px; }
 .progress { height: 100%; width: 0%; background: #43a047; transition: width 0.5s; }
-.tooltip { position: relative; cursor: pointer; color: #1e88e5; }
-.tooltip:hover::after { content: attr(data-tip); position: absolute; left: 0; top: 25px; background: #333; color: white; padding: 5px 8px; border-radius: 5px; font-size: 12px; white-space: nowrap; }
 .balance-green { color: #43a047; font-weight:bold; }
 .bonus-blue { color: #1e88e5; font-weight:bold; }
-
-@media screen and (max-width: 600px){
-  header { font-size: 18px; }
-  button { width: 100%; font-size:16px; }
-  input, select { font-size:16px; }
-}
-
-/* Modal Styles */
-#depositPage {
-  display: none;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.7);
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.3s ease;
-  z-index: 999;
-}
-
-#depositModal {
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  max-width:400px;
-  width:90%;
-  text-align:center;
-  transform: scale(0.8);
-  animation: scaleUp 0.3s forwards;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;} to{opacity:1;}
-}
-
-@keyframes scaleUp{
-  from{transform: scale(0.8);} to{transform: scale(1);}
-}
+#depositModalOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:999; }
+#depositModal { background:white; padding:20px; border-radius:12px; max-width:400px; width:90%; text-align:center; }
+@media screen and (max-width:600px){ button{width:100%;} input, select{font-size:16px;} }
 </style>
 </head>
 <body>
@@ -75,15 +35,13 @@ th { background-color: #f2f2f2; }
 <div class="section">
 <h3>Your Balance: <span id="balance" class="balance-green">0</span> Taka</h3>
 <p>Daily Income: <span class="bonus-blue">20% of Deposit</span></p>
-<div class="progress-bar">
-<div id="dailyProgress" class="progress"></div>
-</div>
+<div class="progress-bar"><div id="dailyProgress" class="progress"></div></div>
 <button class="btn-primary" onclick="claimDailyIncome()">Claim Daily Income</button>
 </div>
 
 <!-- Deposit -->
 <div class="section">
-<h3>Deposit Money <span class="tooltip" data-tip="Deposit between 100-1000 Taka via bKash/Nagad.">?</span></h3>
+<h3>Deposit Money</h3>
 <label>Amount (100-1000 Taka):</label>
 <input type="number" id="depositAmount" min="100" max="1000" value="100">
 <label>Payment Method:</label>
@@ -91,180 +49,94 @@ th { background-color: #f2f2f2; }
   <option value="bkash">bKash</option>
   <option value="nagad">Nagad</option>
 </select>
-<button class="btn-secondary" onclick="openDepositPage()">Go to Deposit Page</button>
+<button class="btn-primary" onclick="openDepositModal()">Deposit</button>
 </div>
 
 <!-- Check-in -->
 <div class="section">
-<h3>Check-in Bonus <span class="tooltip" data-tip="Get 10% bonus of your current balance once per day.">?</span></h3>
-<div class="progress-bar">
-<div id="checkinProgress" class="progress"></div>
-</div>
+<h3>Check-in Bonus (10% of Balance)</h3>
+<div class="progress-bar"><div id="checkinProgress" class="progress"></div></div>
 <button class="btn-primary" onclick="claimCheckinBonus()">Claim 10% Bonus</button>
 <p id="checkinMsg"></p>
 </div>
 
 <!-- Referral -->
 <div class="section">
-<h3>Referral <span class="tooltip" data-tip="Share your link and earn 20% bonus on first deposit of your referral.">?</span></h3>
+<h3>Referral Bonus</h3>
 <input type="text" id="refLink" readonly>
-<button class="btn-secondary" onclick="copyRef()">Copy Referral Link</button>
-<p>Your total referral bonus: <span id="refBonus" class="bonus-blue">0</span> Taka</p>
+<button class="btn-primary" onclick="copyRef()">Copy Referral Link</button>
+<p>Total referral bonus: <span id="refBonus" class="bonus-blue">0</span> Taka</p>
 <p>Total referred users: <span id="refCount">0</span></p>
 </div>
 
 <!-- Transaction History -->
 <div class="section table-container">
-<h3>Your Transaction History</h3>
+<h3>Transaction History</h3>
 <table>
 <thead>
-<tr>
-<th>Time</th>
-<th>Type</th>
-<th>Amount</th>
-<th>Detail</th>
-</tr>
+<tr><th>Time</th><th>Type</th><th>Amount</th><th>Detail</th></tr>
 </thead>
 <tbody id="userTxTable"></tbody>
 </table>
 </div>
 
-<!-- Admin Section -->
+<!-- Admin -->
 <div class="section">
-<h3>Admin: Add / Mark Transaction</h3>
+<h3>Admin: Add Balance</h3>
 <input type="text" id="adminRefCode" placeholder="User Ref Code">
-<input type="number" id="adminAmount" placeholder="Amount to Add">
+<input type="number" id="adminAmount" placeholder="Amount">
 <button class="btn-admin" onclick="addBalance()">Add Balance</button>
 </div>
 
-<div class="section table-container">
-<h3>All Users</h3>
-<table>
-<thead>
-<tr>
-<th>Ref Code</th>
-<th>Balance</th>
-<th>Referral Bonus</th>
-<th>Referrals</th>
-</tr>
-</thead>
-<tbody id="userTable"></tbody>
-</table>
-</div>
-
-<div class="section table-container">
-<h3>All Transactions (Admin View)</h3>
-<table>
-<thead>
-<tr>
-<th>Time</th>
-<th>User</th>
-<th>Type</th>
-<th>Amount</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody id="adminTxTable"></tbody>
-</table>
-</div>
-
-</div>
-
 <!-- Deposit Modal -->
-<div id="depositPage" class="flex" style="display:flex; align-items:center; justify-content:center;">
+<div id="depositModalOverlay">
 <div id="depositModal">
 <h3>Send Money to 01956715958 via bKash/Nagad</h3>
 <p>Amount: <span id="depositAmountDisplay"></span> Taka</p>
 <label>Enter Transaction ID</label>
 <input type="text" id="trxId" placeholder="Enter Transaction ID">
-<button class="btn-primary" onclick="verifyDepositPage()">Submit</button>
-<button class="btn-admin" style="margin-top:10px;" onclick="closeDepositPage()">Close</button>
+<button class="btn-primary" onclick="submitDeposit()">Submit</button>
+<button class="btn-admin" style="margin-top:10px;" onclick="closeDepositModal()">Close</button>
 <p id="depositMsg" style="color:green;"></p>
 </div>
 </div>
 
 <script>
-// DB & User
+// User DB
 let usersDB = {};
 let transactions = [];
 let userTransactions = [];
+let user = { balance:0, dailyClaimed:false, lastCheckin:null, refCode:Math.random().toString(36).substring(2,8), referredBy:null, firstDepositDone:false, refBonus:0, referrals:0 };
 
-let user = {
-balance:0,
-dailyClaimed:false,
-lastCheckin:null,
-refCode:Math.random().toString(36).substring(2,8),
-referredBy:null,
-firstDepositDone:false,
-refBonus:0,
-referrals:0
-};
-
-// Referral from URL
+// Referral
 const urlParams = new URLSearchParams(window.location.search);
 const ref = urlParams.get('ref');
-if(ref && ref!==user.refCode){
-user.referredBy = ref;
-if(!usersDB[ref]) usersDB[ref] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
-}
+if(ref && ref!==user.refCode){ user.referredBy = ref; if(!usersDB[ref]) usersDB[ref]={balance:0,refBonus:0,referrals:0,firstDepositDone:false}; }
+usersDB[user.refCode] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
+document.getElementById('refLink').value = window.location.href.split("?")[0]+"?ref="+user.refCode;
 
-usersDB[user.refCode] = { balance:user.balance, refBonus:user.refBonus, referrals:user.referrals, firstDepositDone:false };
-document.getElementById('refLink').value = window.location.href.split("?")[0] + "?ref=" + user.refCode;
+// Update
+function updateBalance(){ document.getElementById('balance').innerText = user.balance.toFixed(2); document.getElementById('refBonus').innerText=user.refBonus.toFixed(2); document.getElementById('refCount').innerText=user.referrals; updateUserTxTable(); }
+function addTransaction(userCode,type,amount,detail){ let time=new Date().toLocaleString(); transactions.push({time,userCode,type,amount,detail}); if(userCode===user.refCode) userTransactions.push({time,type,amount,detail}); updateBalance(); }
+function updateUserTxTable(){ const tbody=document.getElementById('userTxTable'); tbody.innerHTML=''; for(let tx of userTransactions){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`; tbody.appendChild(tr); } }
 
-// Update functions
-function updateBalance(){
-document.getElementById('balance').innerText = user.balance.toFixed(2);
-document.getElementById('refBonus').innerText = user.refBonus.toFixed(2);
-document.getElementById('refCount').innerText = user.referrals;
-updateUserTable();
-updateUserTxTable();
-updateAdminTxTable();
-updateProgressBars();
-}
+// Deposit Modal
+function openDepositModal(){ let amount = document.getElementById('depositAmount').value; document.getElementById('depositAmountDisplay').innerText = amount; document.getElementById('depositModalOverlay').style.display='flex'; }
+function closeDepositModal(){ document.getElementById('depositModalOverlay').style.display='none'; document.getElementById('trxId').value=''; document.getElementById('depositMsg').innerText=''; }
+function submitDeposit(){ let amount = parseFloat(document.getElementById('depositAmount').value); let trx = document.getElementById('trxId').value.trim(); if(!trx){ alert("Enter Transaction ID"); return; } user.balance += amount; user.firstDepositDone=true; addTransaction(user.refCode,'Deposit',amount,'Txn ID: '+trx); document.getElementById('depositMsg').innerText='Deposit successful!'; closeDepositModal(); updateBalance(); }
 
-function updateUserTable(){
-const tbody = document.getElementById('userTable');
-tbody.innerHTML='';
-for(let code in usersDB){
-let u = usersDB[code];
-let tr = document.createElement('tr');
-tr.innerHTML=`<td>${code}</td><td>${u.balance.toFixed(2)}</td><td>${u.refBonus.toFixed(2)}</td><td>${u.referrals}</td>`;
-tbody.appendChild(tr);
-}
-}
+// Daily Income 20% of deposit
+function claimDailyIncome(){ if(user.dailyClaimed){ alert("Already claimed!"); return; } if(!user.firstDepositDone){ alert("Make deposit first!"); return; } let dailyIncome = parseFloat(document.getElementById('depositAmount').value)*0.2; user.balance+=dailyIncome; user.dailyClaimed=true; addTransaction(user.refCode,'Daily Income',dailyIncome,'20% of deposit'); updateBalance(); alert(`Daily income added: ${dailyIncome.toFixed(2)} Taka`); }
 
-function addTransaction(userCode,type,amount,detail){
-let time = new Date().toLocaleString();
-transactions.push({time,userCode,type,amount,detail});
-if(userCode===user.refCode) userTransactions.push({time,type,amount,detail});
-updateBalance();
-}
+// Check-in bonus
+function claimCheckinBonus(){ let today = new Date().toDateString(); if(user.lastCheckin===today){ alert("Already claimed!"); return; } if(user.balance>0){ let bonus = user.balance*0.1; user.balance+=bonus; user.lastCheckin=today; addTransaction(user.refCode,'Check-in Bonus',bonus,'10% of balance'); updateBalance(); alert(`Check-in bonus added: ${bonus.toFixed(2)} Taka`); } else{ alert("Deposit first"); } }
 
-function updateUserTxTable(){
-const tbody = document.getElementById('userTxTable');
-tbody.innerHTML='';
-for(let tx of userTransactions){
-const tr = document.createElement('tr');
-tr.innerHTML=`<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
-tbody.appendChild(tr);
-}
-}
+// Referral
+function copyRef(){ let refInput=document.getElementById('refLink'); refInput.select(); refInput.setSelectionRange(0,99999); document.execCommand("copy"); alert("Referral link copied!"); }
 
-function updateAdminTxTable(){
-const tbody = document.getElementById('adminTxTable');
-tbody.innerHTML='';
-for(let tx of transactions){
-const tr = document.createElement('tr');
-tr.innerHTML=`<td>${tx.time}</td><td>${tx.userCode}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
-tbody.appendChild(tr);
-}
-}
+// Admin
+function addBalance(){ let ref=document.getElementById('adminRefCode').value.trim(); let amount=parseFloat(document.getElementById('adminAmount').value); if(!ref||isNaN(amount)||amount<=0){ alert("Invalid"); return; } if(!usersDB[ref]) usersDB[ref]={balance:0,refBonus:0,referrals:0,firstDepositDone:false}; usersDB[ref].balance+=amount; addTransaction(ref,'Admin Added',amount,'Admin credit'); alert(amount+' Taka added to '+ref); document.getElementById('adminRefCode').value=''; document.getElementById('adminAmount').value=''; updateBalance(); }
+</script>
 
-function updateProgressBars(){
-document.getElementById('dailyProgress').style.width = user.dailyClaimed?'100%':'0%';
-document.getElementById('checkinProgress').style.width = user.lastCheckin===new Date().toDateString()?'100%':'0%';
-}
-
-// User Actions
-function claimDailyIncome(){
-if(user.dailyClaimed){ alert("Daily income already claimed!");
+</body>
+</html>
