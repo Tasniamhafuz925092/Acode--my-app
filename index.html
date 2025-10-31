@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Final Verified System</title>
+<title>Verified System with Deposit Page</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin:0; padding:0; }
 header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
@@ -24,18 +24,13 @@ th { background-color: #f2f2f2; }
 .progress { height: 100%; width: 0%; background: #43a047; transition: width 0.5s; }
 .tooltip { position: relative; cursor: pointer; color: #1e88e5; }
 .tooltip:hover::after { content: attr(data-tip); position: absolute; left: 0; top: 25px; background: #333; color: white; padding: 5px 8px; border-radius: 5px; font-size: 12px; white-space: nowrap; }
-@media screen and (max-width: 600px){
-  header { font-size: 18px; }
-  button { width: 100%; }
-  input, select { font-size: 16px; }
-}
 .balance-green { color: #43a047; font-weight:bold; }
 .bonus-blue { color: #1e88e5; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<header>Final Verified System</header>
+<header>Verified System</header>
 <div class="container">
 
 <!-- Balance -->
@@ -50,7 +45,7 @@ th { background-color: #f2f2f2; }
 
 <!-- Deposit -->
 <div class="section">
-<h3>Deposit Money <span class="tooltip" data-tip="Deposit between 100-1000 Taka via selected method.">?</span></h3>
+<h3>Deposit Money <span class="tooltip" data-tip="Deposit between 100-1000 Taka via bKash/Nagad.">?</span></h3>
 <label>Amount (100-1000 Taka):</label>
 <input type="number" id="depositAmount" min="100" max="1000" value="100">
 <label>Payment Method:</label>
@@ -58,12 +53,7 @@ th { background-color: #f2f2f2; }
   <option value="bkash">bKash</option>
   <option value="nagad">Nagad</option>
 </select>
-<button class="btn-secondary" onclick="sendDeposit()">Send Money</button>
-
-<hr>
-<h4>Enter Payment Number / Txn ID</h4>
-<input type="text" id="txnId" placeholder="Enter Payment Number / Txn ID">
-<button class="btn-primary" onclick="verifyTxn()">Verify Payment</button>
+<button class="btn-secondary" onclick="openDepositPage()">Go to Deposit Page</button>
 </div>
 
 <!-- Check-in -->
@@ -142,28 +132,38 @@ th { background-color: #f2f2f2; }
 
 </div>
 
-<script>
-// DB & Transactions
-let usersDB = {}; 
-let transactions = []; 
-let userTransactions = []; 
+<!-- Deposit Page Modal -->
+<div id="depositPage" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; padding:20px; overflow:auto;">
+<h3>Send Money to 01956715958 via bKash/Nagad</h3>
+<p>Amount: <span id="depositAmountDisplay"></span> Taka</p>
+<label>Enter Transaction ID</label>
+<input type="text" id="trxId" placeholder="Enter Transaction ID">
+<button onclick="verifyDepositPage()">Submit</button>
+<button style="background:#e53935; margin-top:10px;" onclick="closeDepositPage()">Close</button>
+<p id="depositMsg" style="color:green;"></p>
+</div>
 
-// Current User
+<script>
+// DB & User
+let usersDB = {};
+let transactions = [];
+let userTransactions = [];
+
 let user = {
-balance: 0,
-dailyClaimed: false,
-lastCheckin: null,
-refCode: Math.random().toString(36).substring(2,8),
-referredBy: null,
-firstDepositDone: false,
-refBonus: 0,
-referrals: 0
+balance:0,
+dailyClaimed:false,
+lastCheckin:null,
+refCode:Math.random().toString(36).substring(2,8),
+referredBy:null,
+firstDepositDone:false,
+refBonus:0,
+referrals:0
 };
 
 // Referral from URL
 const urlParams = new URLSearchParams(window.location.search);
 const ref = urlParams.get('ref');
-if(ref && ref !== user.refCode){
+if(ref && ref!==user.refCode){
 user.referredBy = ref;
 if(!usersDB[ref]) usersDB[ref] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
 }
@@ -184,48 +184,133 @@ updateProgressBars();
 
 function updateUserTable(){
 const tbody = document.getElementById('userTable');
-tbody.innerHTML = '';
+tbody.innerHTML='';
 for(let code in usersDB){
-const u = usersDB[code];
-const tr = document.createElement('tr');
-tr.innerHTML = `<td>${code}</td><td>${u.balance.toFixed(2)}</td><td>${u.refBonus.toFixed(2)}</td><td>${u.referrals}</td>`;
+let u = usersDB[code];
+let tr = document.createElement('tr');
+tr.innerHTML=`<td>${code}</td><td>${u.balance.toFixed(2)}</td><td>${u.refBonus.toFixed(2)}</td><td>${u.referrals}</td>`;
 tbody.appendChild(tr);
 }
 }
 
-function addTransaction(userCode, type, amount, detail){
+function addTransaction(userCode,type,amount,detail){
 let time = new Date().toLocaleString();
 transactions.push({time,userCode,type,amount,detail});
-if(userCode === user.refCode) userTransactions.push({time,type,amount,detail});
+if(userCode===user.refCode) userTransactions.push({time,type,amount,detail});
 updateBalance();
 }
 
 function updateUserTxTable(){
 const tbody = document.getElementById('userTxTable');
-tbody.innerHTML = '';
+tbody.innerHTML='';
 for(let tx of userTransactions){
 const tr = document.createElement('tr');
-tr.innerHTML = `<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
+tr.innerHTML=`<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
 tbody.appendChild(tr);
 }
 }
 
 function updateAdminTxTable(){
 const tbody = document.getElementById('adminTxTable');
-tbody.innerHTML = '';
+tbody.innerHTML='';
 for(let tx of transactions){
 const tr = document.createElement('tr');
-tr.innerHTML = `<td>${tx.time}</td><td>${tx.userCode}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
+tr.innerHTML=`<td>${tx.time}</td><td>${tx.userCode}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
 tbody.appendChild(tr);
 }
 }
 
 function updateProgressBars(){
-document.getElementById('dailyProgress').style.width = user.dailyClaimed ? '100%' : '0%';
-document.getElementById('checkinProgress').style.width = user.lastCheckin===new Date().toDateString() ? '100%' : '0%';
-document.getElementById('depositProgress')?.style.width = user.firstDepositDone ? '100%' : '0%';
+document.getElementById('dailyProgress').style.width = user.dailyClaimed?'100%':'0%';
+document.getElementById('checkinProgress').style.width = user.lastCheckin===new Date().toDateString()?'100%':'0%';
 }
 
 // User Actions
 function claimDailyIncome(){
-if(user.dailyClaimed){ alert("Daily income already claimed!"); return;
+if(user.dailyClaimed){ alert("Daily income already claimed!"); return; }
+user.balance+=40;
+user.dailyClaimed=true;
+usersDB[user.refCode].balance=user.balance;
+addTransaction(user.refCode,'Daily Income',40,'Claimed daily income');
+alert("40 Taka added as daily income!");
+updateBalance();
+}
+
+function claimCheckinBonus(){
+let today = new Date().toDateString();
+if(user.lastCheckin===today){ alert("Already claimed today!"); return; }
+if(user.balance>0){
+let bonus = user.balance*0.10;
+user.balance+=bonus;
+usersDB[user.refCode].balance=user.balance;
+addTransaction(user.refCode,'Check-in Bonus',bonus,'10% of balance');
+user.lastCheckin=today;
+alert(`10% check-in bonus claimed: ${bonus.toFixed(2)} Taka`);
+} else { alert("Make deposit first"); }
+updateBalance();
+}
+
+function copyRef(){
+let refInput=document.getElementById('refLink');
+refInput.select();
+refInput.setSelectionRange(0,99999);
+document.execCommand("copy");
+alert("Referral link copied!");
+}
+
+// Admin
+function addBalance(){
+let ref=document.getElementById('adminRefCode').value.trim();
+let amount=parseFloat(document.getElementById('adminAmount').value);
+if(!ref||isNaN(amount)||amount<=0){ alert("Enter valid ref code and amount"); return; }
+if(!usersDB[ref]) usersDB[ref]={ balance:0, refBonus:0, referrals:0, firstDepositDone:false };
+usersDB[ref].balance+=amount;
+addTransaction(ref,'Admin Added',amount,'Admin credited balance');
+alert(`Added ${amount.toFixed(2)} Taka to ${ref}`);
+document.getElementById('adminRefCode').value='';
+document.getElementById('adminAmount').value='';
+updateBalance();
+}
+
+// Deposit Page
+function openDepositPage(){
+document.getElementById('depositPage').style.display='block';
+let amount = parseFloat(document.getElementById('depositAmount').value);
+document.getElementById('depositAmountDisplay').innerText = amount.toFixed(2);
+}
+
+function closeDepositPage(){
+document.getElementById('depositPage').style.display='none';
+document.getElementById('trxId').value='';
+document.getElementById('depositMsg').innerText='';
+}
+
+function verifyDepositPage(){
+let trx = document.getElementById('trxId').value.trim();
+if(!trx){ alert("Enter Transaction ID"); return; }
+let amount = parseFloat(document.getElementById('depositAmount').value);
+
+// Update balance
+user.balance+=amount;
+usersDB[user.refCode].balance=user.balance;
+addTransaction(user.refCode,'Deposit',amount,'Verified with TXID: '+trx);
+
+// Referral bonus
+if(user.firstDepositDone===false && user.referredBy){
+let bonus = amount*0.2;
+if(!usersDB[user.referredBy]) usersDB[user.referredBy]={ balance:0, refBonus:0, referrals:0 };
+usersDB[user.referredBy].refBonus+=bonus;
+usersDB[user.referredBy].referrals+=1;
+addTransaction(user.referredBy,'Referral Bonus',bonus,'From '+user.refCode);
+user.firstDepositDone=true;
+}
+
+document.getElementById('depositMsg').innerText=`Deposit verified! ${amount} Taka added.`;
+document.getElementById('trxId').value='';
+updateBalance();
+}
+
+updateBalance();
+</script>
+</body>
+</html>
