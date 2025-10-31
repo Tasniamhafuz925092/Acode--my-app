@@ -212,4 +212,20 @@ function adminLogin(){
 
 // Admin add balance
 function addBalance(){
-  let ref = document.getElementById('adminRefCode').value.trim
+  let ref = document.getElementById('adminRefCode').value.trim();
+  let amt = parseFloat(document.getElementById('adminAmount').value);
+  if(!ref || !amt){ alert("Enter all fields"); return; }
+  if(ref===user.refCode){
+    user.balance += amt;
+    addTransaction('Admin Add', amt, 'Admin added balance');
+    updateBalance();
+    alert(`Balance added: ${amt.toFixed(2)} Taka`);
+  } else {
+    alert("User not found in demo");
+  }
+}
+
+</script>
+
+</body>
+</html>
