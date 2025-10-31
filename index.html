@@ -32,7 +32,7 @@ th { background-color: #f2f2f2; }
 <header>Verified System Full</header>
 <div class="container">
 
-<!-- Balance -->
+<!-- Balance Section -->
 <div class="section">
 <h3>Your Balance: <span id="balance" class="balance-green">0</span> Taka</h3>
 <p>Daily Income: <span class="bonus-blue">20% of Deposit</span></p>
@@ -40,7 +40,7 @@ th { background-color: #f2f2f2; }
 <button class="btn-primary" onclick="claimDailyIncome()">Claim Daily Income</button>
 </div>
 
-<!-- Deposit -->
+<!-- Deposit Section -->
 <div class="section">
 <h3>Deposit Money</h3>
 <label>Amount (100-1000 Taka):</label>
@@ -53,7 +53,7 @@ th { background-color: #f2f2f2; }
 <button class="btn-primary" onclick="openDepositModal()">Deposit</button>
 </div>
 
-<!-- Check-in -->
+<!-- Check-in Bonus -->
 <div class="section">
 <h3>Check-in Bonus (10% of Balance)</h3>
 <div class="progress-bar"><div id="checkinProgress" class="progress"></div></div>
@@ -61,7 +61,7 @@ th { background-color: #f2f2f2; }
 <p id="checkinMsg"></p>
 </div>
 
-<!-- Referral -->
+<!-- Referral Section -->
 <div class="section">
 <h3>Referral Bonus</h3>
 <input type="text" id="refLink" readonly>
@@ -87,7 +87,7 @@ th { background-color: #f2f2f2; }
 <button class="btn-admin" onclick="showAdminLogin()">Login as Admin</button>
 </div>
 
-<!-- Admin Section Hidden -->
+<!-- Admin Section -->
 <div class="section" id="adminSection">
 <h3>Add Balance to User</h3>
 <input type="text" id="adminRefCode" placeholder="User Ref Code">
@@ -146,7 +146,6 @@ function submitDeposit(){
   let trx = document.getElementById('trxId').value.trim();
   if(!trx){ alert("Enter Transaction ID"); return; }
 
-  // PHP backend fetch
   fetch('deposit.php',{
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -225,16 +224,22 @@ function addTransaction(type, amount, detail){
 function showAdminLogin(){
   let username = prompt("Enter Admin Username");
   let password = prompt("Enter Admin Password");
+  if(!username || !password){ alert("Cancel or empty"); return; }
 
-  fetch('admin_add.php',{
+  fetch('admin_login.php',{
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`adminUser=${username}&adminPass=${password}&targetRef=${user.refCode}&amount=0`
+    body:`adminUser=${encodeURIComponent(username)}&adminPass=${encodeURIComponent(password)}`
   }).then(r=>r.json()).then(res=>{
     if(res.status==1){
       document.getElementById('adminSection').style.display='block';
       alert("Admin login successful!");
-    } else { alert("Invalid admin credentials!"); }
+    } else {
+      alert("Invalid admin credentials!");
+    }
+  }).catch(err=>{
+    console.error(err);
+    alert("Request failed");
   });
 }
 
