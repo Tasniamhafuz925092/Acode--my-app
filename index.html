@@ -35,7 +35,7 @@ th { background-color: #f2f2f2; }
 <!-- Balance Section -->
 <div class="section">
 <h3>Your Balance: <span id="balance" class="balance-green">0</span> Taka</h3>
-<p>Daily Income: <span class="bonus-blue">20% of Deposit</span></p>
+<p>Daily Income: <span class="bonus-blue">20% of last deposit</span></p>
 <div class="progress-bar"><div id="dailyProgress" class="progress"></div></div>
 <button class="btn-primary" onclick="claimDailyIncome()">Claim Daily Income</button>
 </div>
@@ -81,10 +81,12 @@ th { background-color: #f2f2f2; }
 </table>
 </div>
 
-<!-- Admin Login Button -->
+<!-- Admin Login -->
 <div class="section">
 <h3>Admin Panel</h3>
-<button class="btn-admin" onclick="showAdminLogin()">Login as Admin</button>
+<input type="text" id="adminUsername" placeholder="Admin Username">
+<input type="password" id="adminPassword" placeholder="Admin Password">
+<button class="btn-admin" onclick="adminLogin()">Login as Admin</button>
 </div>
 
 <!-- Admin Section -->
@@ -113,7 +115,7 @@ th { background-color: #f2f2f2; }
 let user = { balance:0, dailyClaimed:false, lastCheckin:null, refCode:Math.random().toString(36).substring(2,8), refBonus:0, referrals:0, firstDepositDone:false };
 let userTransactions = [];
 
-// Update balance & table
+// Update balance & transaction table
 function updateBalance(){
   document.getElementById('balance').innerText = user.balance.toFixed(2);
   document.getElementById('refBonus').innerText = user.refBonus.toFixed(2);
@@ -145,7 +147,6 @@ function submitDeposit(){
   let amount = parseFloat(document.getElementById('depositAmount').value);
   let trx = document.getElementById('trxId').value.trim();
   if(!trx){ alert("Enter Transaction ID"); return; }
-
   user.balance += amount;
   user.firstDepositDone = true;
   addTransaction('Deposit', amount, 'Txn ID: '+trx);
@@ -154,7 +155,7 @@ function submitDeposit(){
   alert(`Deposit added: ${amount.toFixed(2)} Taka`);
 }
 
-// Daily income
+// Daily Income
 function claimDailyIncome(){
   if(user.dailyClaimed){ alert("Already claimed!"); return; }
   if(!user.firstDepositDone){ alert("Deposit first"); return; }
@@ -166,7 +167,7 @@ function claimDailyIncome(){
   alert(`Daily income added: ${dailyIncome.toFixed(2)} Taka`);
 }
 
-// Check-in bonus
+// Check-in Bonus
 function claimCheckinBonus(){
   let today = new Date().toDateString();
   if(user.lastCheckin===today){ alert("Already claimed"); return; }
@@ -181,4 +182,34 @@ function claimCheckinBonus(){
 }
 
 // Referral
-document.getElementById('refLink').value=window.location.href.split("?")[0
+document.getElementById('refLink').value=window.location.href.split("?")[0]+"?ref="+user.refCode;
+function copyRef(){
+  let refInput=document.getElementById('refLink');
+  refInput.select(); refInput.setSelectionRange(0,99999);
+  document.execCommand("copy");
+  alert("Referral link copied!");
+}
+
+// Transactions
+function addTransaction(type, amount, detail){
+  let time = new Date().toLocaleString();
+  userTransactions.push({time,type,amount,detail});
+  updateUserTxTable();
+}
+
+// Admin login
+function adminLogin(){
+  const username = document.getElementById('adminUsername').value.trim();
+  const password = document.getElementById('adminPassword').value.trim();
+  if(username==='admin' && password==='Tasnia91223'){
+    alert("Admin login successful!");
+    document.getElementById('adminSection').style.display='block';
+  } else {
+    alert("Admin login failed!");
+    document.getElementById('adminSection').style.display='none';
+  }
+}
+
+// Admin add balance
+function addBalance(){
+  let ref = document.getElementById('adminRefCode').value.trim
