@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verified System Full</title>
+<title>Verified System Full Simulation</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin:0; padding:0; }
 header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; }
@@ -29,7 +29,7 @@ th { background-color: #f2f2f2; }
 </head>
 <body>
 
-<header>Verified System Full</header>
+<header>Verified System Full Simulation</header>
 <div class="container">
 
 <!-- Balance Section -->
@@ -146,20 +146,12 @@ function submitDeposit(){
   let trx = document.getElementById('trxId').value.trim();
   if(!trx){ alert("Enter Transaction ID"); return; }
 
-  fetch('deposit.php',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`userRef=${user.refCode}&amount=${amount}&trxId=${trx}`
-  }).then(r=>r.json()).then(res=>{
-    if(res.status==1){
-      user.balance=res.balance;
-      user.firstDepositDone=true;
-      addTransaction('Deposit', amount, 'Txn ID: '+trx);
-      closeDepositModal();
-      updateBalance();
-      alert(res.msg);
-    } else { alert(res.msg); }
-  });
+  user.balance += amount;
+  user.firstDepositDone = true;
+  addTransaction('Deposit', amount, 'Txn ID: '+trx);
+  closeDepositModal();
+  updateBalance();
+  alert(`Deposit added: ${amount.toFixed(2)} Taka`);
 }
 
 // Daily income
@@ -167,19 +159,11 @@ function claimDailyIncome(){
   if(user.dailyClaimed){ alert("Already claimed!"); return; }
   if(!user.firstDepositDone){ alert("Deposit first"); return; }
   let dailyIncome = parseFloat(document.getElementById('depositAmount').value)*0.2;
-  fetch('deposit.php',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`userRef=${user.refCode}&amount=${dailyIncome}&trxId=DailyIncome`
-  }).then(r=>r.json()).then(res=>{
-    if(res.status==1){
-      user.balance=res.balance;
-      addTransaction('Daily Income', dailyIncome, '20% of deposit');
-      user.dailyClaimed=true;
-      updateBalance();
-      alert(`Daily income added: ${dailyIncome.toFixed(2)} Taka`);
-    }
-  });
+  user.balance += dailyIncome;
+  addTransaction('Daily Income', dailyIncome, '20% of deposit');
+  user.dailyClaimed = true;
+  updateBalance();
+  alert(`Daily income added: ${dailyIncome.toFixed(2)} Taka`);
 }
 
 // Check-in bonus
@@ -188,86 +172,13 @@ function claimCheckinBonus(){
   if(user.lastCheckin===today){ alert("Already claimed"); return; }
   if(user.balance>0){
     let bonus = user.balance*0.1;
-    fetch('deposit.php',{
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:`userRef=${user.refCode}&amount=${bonus}&trxId=CheckinBonus`
-    }).then(r=>r.json()).then(res=>{
-      if(res.status==1){
-        user.balance=res.balance;
-        user.lastCheckin=today;
-        addTransaction('Check-in Bonus', bonus, '10% of balance');
-        updateBalance();
-        alert(`Check-in bonus added: ${bonus.toFixed(2)} Taka`);
-      }
-    });
+    user.balance += bonus;
+    user.lastCheckin=today;
+    addTransaction('Check-in Bonus', bonus, '10% of balance');
+    updateBalance();
+    alert(`Check-in bonus added: ${bonus.toFixed(2)} Taka`);
   } else { alert("Deposit first"); }
 }
 
 // Referral
-document.getElementById('refLink').value=window.location.href.split("?")[0]+"?ref="+user.refCode;
-function copyRef(){
-  let refInput=document.getElementById('refLink');
-  refInput.select(); refInput.setSelectionRange(0,99999);
-  document.execCommand("copy");
-  alert("Referral link copied!");
-}
-
-// Transactions
-function addTransaction(type, amount, detail){
-  let time = new Date().toLocaleString();
-  userTransactions.push({time,type,amount,detail});
-  updateUserTxTable();
-}
-
-// Admin Login
-function showAdminLogin(){
-  let username = prompt("Enter Admin Username");
-  let password = prompt("Enter Admin Password");
-  if(!username || !password){ alert("Cancel or empty"); return; }
-
-  fetch('admin_login.php',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`adminUser=${encodeURIComponent(username)}&adminPass=${encodeURIComponent(password)}`
-  }).then(r=>r.json()).then(res=>{
-    if(res.status==1){
-      document.getElementById('adminSection').style.display='block';
-      alert("Admin login successful!");
-    } else {
-      alert("Invalid admin credentials!");
-    }
-  }).catch(err=>{
-    console.error(err);
-    alert("Request failed");
-  });
-}
-
-// Admin add balance
-function addBalance(){
-  let targetRef = document.getElementById('adminRefCode').value;
-  let amount = parseFloat(document.getElementById('adminAmount').value);
-  if(!targetRef || !amount){ alert("Fill all fields"); return; }
-
-  let adminUsername = prompt("Admin username");
-  let adminPassword = prompt("Admin password");
-
-  fetch('admin_add.php',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`adminUser=${adminUsername}&adminPass=${adminPassword}&targetRef=${targetRef}&amount=${amount}`
-  }).then(r=>r.json()).then(res=>{
-    if(res.status==1){
-      if(targetRef===user.refCode) user.balance=res.balance;
-      addTransaction('Admin Added', amount, 'Balance added by Admin');
-      updateBalance();
-      alert(res.msg);
-    } else { alert(res.msg); }
-  });
-}
-
-updateBalance();
-</script>
-
-</body>
-</html>
+document.getElementById('refLink').value=window.location.href.split("?")[0
