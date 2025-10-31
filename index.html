@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Responsive Full System</title>
+<title>Final Verified System</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin:0; padding:0; }
 header { background: #2e7d32; color: white; padding: 15px; text-align: center; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
@@ -22,7 +22,6 @@ th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
 th { background-color: #f2f2f2; }
 .progress-bar { width: 100%; background: #eee; border-radius: 10px; overflow: hidden; height: 15px; margin-bottom: 10px; }
 .progress { height: 100%; width: 0%; background: #43a047; transition: width 0.5s; }
-.label { font-weight: bold; margin-bottom: 5px; display:block; }
 .tooltip { position: relative; cursor: pointer; color: #1e88e5; }
 .tooltip:hover::after { content: attr(data-tip); position: absolute; left: 0; top: 25px; background: #333; color: white; padding: 5px 8px; border-radius: 5px; font-size: 12px; white-space: nowrap; }
 @media screen and (max-width: 600px){
@@ -36,10 +35,10 @@ th { background-color: #f2f2f2; }
 </head>
 <body>
 
-<header>Modern Responsive Full System</header>
+<header>Final Verified System</header>
 <div class="container">
 
-<!-- User Balance -->
+<!-- Balance -->
 <div class="section">
 <h3>Your Balance: <span id="balance" class="balance-green">0</span> Taka</h3>
 <p>Daily Income: <span class="bonus-blue">40</span> Taka</p>
@@ -56,13 +55,15 @@ th { background-color: #f2f2f2; }
 <input type="number" id="depositAmount" min="100" max="1000" value="100">
 <label>Payment Method:</label>
 <select id="depositMethod">
-<option value="bkash">bKash</option>
-<option value="nagad">Nagad</option>
+  <option value="bkash">bKash</option>
+  <option value="nagad">Nagad</option>
 </select>
-<div class="progress-bar">
-<div id="depositProgress" class="progress"></div>
-</div>
 <button class="btn-secondary" onclick="sendDeposit()">Send Money</button>
+
+<hr>
+<h4>Enter Payment Number / Txn ID</h4>
+<input type="text" id="txnId" placeholder="Enter Payment Number / Txn ID">
+<button class="btn-primary" onclick="verifyTxn()">Verify Payment</button>
 </div>
 
 <!-- Check-in -->
@@ -222,77 +223,9 @@ tbody.appendChild(tr);
 function updateProgressBars(){
 document.getElementById('dailyProgress').style.width = user.dailyClaimed ? '100%' : '0%';
 document.getElementById('checkinProgress').style.width = user.lastCheckin===new Date().toDateString() ? '100%' : '0%';
-document.getElementById('depositProgress').style.width = user.firstDepositDone ? '100%' : '0%';
+document.getElementById('depositProgress')?.style.width = user.firstDepositDone ? '100%' : '0%';
 }
 
 // User Actions
 function claimDailyIncome(){
-if(user.dailyClaimed){ alert("Daily income already claimed!"); return; }
-user.balance += 40;
-user.dailyClaimed = true;
-usersDB[user.refCode].balance = user.balance;
-addTransaction(user.refCode,'Daily Income',40,'Claimed daily income');
-alert("40 Taka added as daily income!");
-}
-
-function sendDeposit(){
-let amount = parseFloat(document.getElementById('depositAmount').value);
-let method = document.getElementById('depositMethod').value;
-if(amount<100||amount>1000){ alert("Amount must be 100-1000"); return; }
-
-window.open(`https://t.me/YourTelegramBot?start=${encodeURIComponent("Send "+amount+" via "+method+" to 01956715958")}`,"_blank");
-user.balance += amount;
-addTransaction(user.refCode,'Deposit',amount,method);
-
-if(user.firstDepositDone===false && user.referredBy){
-let bonus = amount*0.2;
-usersDB[user.referredBy].refBonus += bonus;
-usersDB[user.referredBy].referrals +=1;
-addTransaction(user.referredBy,'Referral Bonus',bonus,'From '+user.refCode);
-user.firstDepositDone=true;
-}
-usersDB[user.refCode].balance = user.balance;
-updateBalance();
-}
-
-function claimCheckinBonus(){
-let today = new Date().toDateString();
-if(user.lastCheckin===today){ alert("Already claimed today!"); return; }
-if(user.balance>0){
-let bonus = user.balance*0.10;
-user.balance+=bonus;
-usersDB[user.refCode].balance = user.balance;
-addTransaction(user.refCode,'Check-in Bonus',bonus,'10% of balance');
-user.lastCheckin=today;
-alert(`10% check-in bonus claimed: ${bonus.toFixed(2)} Taka`);
-} else { alert("Make deposit first"); }
-}
-
-function copyRef(){
-let refInput = document.getElementById('refLink');
-refInput.select();
-refInput.setSelectionRange(0,99999);
-document.execCommand("copy");
-alert("Referral link copied!");
-}
-
-// Admin add balance
-function addBalance(){
-let ref = document.getElementById('adminRefCode').value.trim();
-let amount = parseFloat(document.getElementById('adminAmount').value);
-if(!ref||isNaN(amount)||amount<=0){ alert("Enter valid ref code and amount"); return; }
-if(!usersDB[ref]) usersDB[ref] = { balance:0, refBonus:0, referrals:0, firstDepositDone:false };
-usersDB[ref].balance += amount;
-addTransaction(ref,'Admin Added',amount,'Admin credited balance');
-alert(`Added ${amount.toFixed(2)} Taka to ${ref}`);
-document.getElementById('adminRefCode').value='';
-document.getElementById('adminAmount').value='';
-updateBalance();
-}
-
-updateBalance();
-</script>
-
-</body>
-</html>
-``
+if(user.dailyClaimed){ alert("Daily income already claimed!"); return;
